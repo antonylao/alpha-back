@@ -7,9 +7,9 @@ export class Room {
   id: number
   @Column({ type: "varchar", length: 75 })
   name: string;
-  @Column({ type: "integer" })
+  @Column({ type: "integer", unsigned: true })
   capacity: number;
-  @Column({ type: "integer" })
+  @Column({ type: "integer", unsigned: true })
   numberRoom: number;
 
   //pas de clé étrangère

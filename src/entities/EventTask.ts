@@ -13,7 +13,7 @@ export enum Progression {
 export class EventTask {
   @PrimaryGeneratedColumn()
   id: number
-  @Column({ type: "integer" })
+  @Column({ type: "integer", unsigned: true })
   nbVolunteersRequired: number;
   @Column({
     type: "enum",

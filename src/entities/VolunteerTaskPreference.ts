@@ -14,6 +14,4 @@ export class VolunteerTaskPreference {
 
   @CreateDateColumn()
   created_at: Date
-  @UpdateDateColumn()
-  updated_at: Date
 }

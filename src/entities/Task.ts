@@ -1,13 +1,13 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { EventTask } from "./EventTask";
 import { VolunteerTaskPreference } from "./VolunteerTaskPreference";
-import { VolunteerAssignment } from "./VolunteerAssignement";
+import { VolunteerAssignment } from "./VolunteerAssignment";
 
 @Entity()
 export class Task {
   @PrimaryGeneratedColumn()
   id: number
-  @Column({ type: "varchar", length: 75 })
+  @Column({ type: "varchar", length: 75, unique: true })
   name: string;
   @Column({ type: "varchar", length: 300 })
   description: string;

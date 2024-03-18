@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
 import { Room } from "./Room";
 import { EventTask } from "./EventTask";
-import { VolunteerAssignment } from "./VolunteerAssignement";
+import { VolunteerAssignment } from "./VolunteerAssignment";
 
 export enum EventType {
   CONCERT = "concert",
@@ -26,7 +26,7 @@ export class Event {
   startOn: Date;
   @Column({ type: "time" })
   duration: string; //? pas sûr
-  @Column({ type: "varchar", length: 300 })
+  @Column({ type: "varchar", length: 300, nullable: true })
   picture: string; //path
 
   @ManyToOne(() => Room, (room) => room.events, { nullable: false })

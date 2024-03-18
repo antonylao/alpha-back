@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { VolunteerTaskPreference } from "./VolunteerTaskPreference";
-import { VolunteerAssignment } from "./VolunteerAssignement";
+import { VolunteerAssignment } from "./VolunteerAssignment";
 
 
 export enum Role {
@@ -21,11 +21,11 @@ export class User {
   firstname: string;
   @Column({ type: "varchar", length: 75 })
   lastname: string;
-  @Column({ type: "varchar", length: 300 })
+  @Column({ type: "varchar", length: 300, unique: true })
   email: string;
   @Column({ type: "varchar", length: 300 })
   password: string;  //password hashé
-  @Column({ type: "varchar", length: 300 })
+  @Column({ type: "varchar", length: 300, nullable: true })
   profilePicture: string; //chemin url
   @Column({ type: "boolean", default: false })
   warning: boolean;
