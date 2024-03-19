@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Event } from "./Event";
 import { Task } from "./Task";
 
@@ -10,6 +10,7 @@ export enum Progression {
 }
 
 @Entity()
+@Unique(["task", "event"])
 export class EventTask {
   @PrimaryGeneratedColumn()
   id: number
@@ -18,12 +19,13 @@ export class EventTask {
   @Column({
     type: "enum",
     enum: Progression,
+    default: Progression.NOT_STARTED
   })
   progression: Progression; //define with "Progression.<ENUM>"
 
-  @ManyToOne(() => Event, (event) => event.eventTasks, { nullable: false })
+  @ManyToOne(() => Event, (event) => event.eventTasks, { nullable: false, onDelete: 'CASCADE' })
   event: Event;
-  @ManyToOne(() => Task, (task) => task.eventTasks, { nullable: false })
+  @ManyToOne(() => Task, (task) => task.eventTasks, { nullable: false, onDelete: 'CASCADE' })
   task: Task;
 
   @CreateDateColumn()

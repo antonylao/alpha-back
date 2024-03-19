@@ -11,6 +11,7 @@ dotenv.config()
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
+
         app.use(bodyParser.json())
         Routes.forEach(route => {
             (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {

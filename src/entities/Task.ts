@@ -11,7 +11,7 @@ export class Task {
   name: string;
   @Column({ type: "varchar", length: 300 })
   description: string;
-  @Column({ type: "integer", default: 1 })
+  @Column({ type: "integer", unsigned: true, default: 1 })
   nbVolunteersDefault: number;
 
   @OneToMany(() => EventTask, eventTask => eventTask.task)

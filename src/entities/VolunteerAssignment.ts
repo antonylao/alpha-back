@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp, Unique, UpdateDateColumn } from "typeorm";
 import { User } from "./User";
 import { Event } from "./Event";
 import { Task } from "./Task";
@@ -11,6 +11,8 @@ export enum Status {
 }
 
 @Entity()
+@Unique(["task", "event"])
+@Unique(["task", "event", "user"])
 export class VolunteerAssignment {
   @PrimaryGeneratedColumn()
   id: number
@@ -26,11 +28,11 @@ export class VolunteerAssignment {
   @Column({ type: "tinyint", unsigned: true, nullable: true }) //min: 1, max: 5: dans l'app
   organiserRating: number;
 
-  @ManyToOne(() => User, (user) => user.volunteerAssignments, { nullable: false })
+  @ManyToOne(() => User, (user) => user.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
   user: User;
-  @ManyToOne(() => Task, (task) => task.volunteerAssignments, { nullable: false })
+  @ManyToOne(() => Task, (task) => task.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
   task: Task;
-  @ManyToOne(() => Event, (event) => event.volunteerAssignments, { nullable: false })
+  @ManyToOne(() => Event, (event) => event.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
   event: Event;
 
   @CreateDateColumn()

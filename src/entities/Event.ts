@@ -29,7 +29,7 @@ export class Event {
   @Column({ type: "varchar", length: 300, nullable: true })
   picture: string; //path
 
-  @ManyToOne(() => Room, (room) => room.events, { nullable: false })
+  @ManyToOne(() => Room, (room) => room.events, { nullable: false, onDelete: 'CASCADE' })
   room: Room;
 
   @OneToMany(() => EventTask, eventTask => eventTask.event)
