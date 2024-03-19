@@ -34,12 +34,12 @@ export class Event {
 
   @OneToMany(() => EventTask, eventTask => eventTask.event)
   eventTasks: EventTask[];
-  @OneToMany(() => VolunteerAssignment, volunteerAssignment => volunteerAssignment.event)
-  volunteerAssignments: VolunteerAssignment[];
+  // @OneToMany(() => VolunteerAssignment, volunteerAssignment => volunteerAssignment.event)
+  // volunteer_assignments: VolunteerAssignment[];
 
   @CreateDateColumn()
-  created_at: Date
+  createdAt: Date
   @UpdateDateColumn()
-  updated_at: Date
+  updatedAt: Date
 }
 

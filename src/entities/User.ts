@@ -16,7 +16,7 @@ export class User {
     type: "enum",
     enum: Role,
     default: Role.VOLUNTEER,
-    readonly: true
+    readonly: true //prevent role update
   })
   role: Role; //define with "Role.<ENUM>"
   @Column({ type: "varchar", length: 75 })

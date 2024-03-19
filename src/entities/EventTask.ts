@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { Event } from "./Event";
 import { Task } from "./Task";
+import { VolunteerAssignment } from "./VolunteerAssignment";
 
 export enum Progression {
   NOT_STARTED = "not_started",
@@ -10,10 +11,9 @@ export enum Progression {
 }
 
 @Entity()
+//la ligne en dessous ne sert à rien, mais je le garde pour la clarté
 @Unique(["task", "event"])
 export class EventTask {
-  @PrimaryGeneratedColumn()
-  id: number
   @Column({ type: "integer", unsigned: true })
   nbVolunteersRequired: number;
   @Column({
@@ -23,13 +23,23 @@ export class EventTask {
   })
   progression: Progression; //define with "Progression.<ENUM>"
 
+
+
+  @PrimaryColumn({ type: "integer", name: "eventId" })
   @ManyToOne(() => Event, (event) => event.eventTasks, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: "eventId" })
   event: Event;
+  @PrimaryColumn({ type: "integer", name: "taskId" })
   @ManyToOne(() => Task, (task) => task.eventTasks, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: "taskId" })
   task: Task;
 
+  @OneToMany(() => VolunteerAssignment, (volunteerAssignment) => volunteerAssignment.eventTask)
+  volunteerAssignments: VolunteerAssignment[];
+
   @CreateDateColumn()
-  created_at: Date
+  createdAt: Date
   @UpdateDateColumn()
-  updated_at: Date
+  updatedAt: Date
 }
+

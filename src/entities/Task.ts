@@ -18,12 +18,12 @@ export class Task {
   eventTasks: EventTask[];
   @OneToMany(() => VolunteerTaskPreference, volunteerTaskPreference => volunteerTaskPreference.task)
   volunteerTaskPreferences: VolunteerTaskPreference[];
-  @OneToMany(() => VolunteerAssignment, volunteerAssignment => volunteerAssignment.task)
-  volunteerAssignments: VolunteerAssignment[];
+  // @OneToMany(() => VolunteerAssignment, volunteerAssignment => volunteerAssignment.task)
+  // volunteer_assignments: VolunteerAssignment[];
 
   @CreateDateColumn()
-  created_at: Date
+  createdAt: Date
   @UpdateDateColumn()
-  updated_at: Date
+  updatedAt: Date
 }
 
