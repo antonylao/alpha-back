@@ -3,6 +3,7 @@ import { User } from "./User";
 import { Task } from "./Task";
 
 @Entity()
+// (userId, taskId) is NOT NULL and UNIQUE => equivalent to PRIMARY KEY
 @Unique(["user", "task"])
 export class VolunteerTaskPreference {
   //clé primaire: union des clés étrangères?
@@ -15,5 +16,5 @@ export class VolunteerTaskPreference {
   task: Task;
 
   @CreateDateColumn()
-  created_at: Date
+  createdAt: Date
 }

@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp, Unique, UpdateDateColumn } from "typeorm";
+import { Check, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp, Unique, UpdateDateColumn } from "typeorm";
 import { User } from "./User";
 import { Event } from "./Event";
 import { Task } from "./Task";
+import { EventTask } from "./EventTask";
 
 export enum Status {
   PENDING = "pending",
@@ -11,8 +12,8 @@ export enum Status {
 }
 
 @Entity()
-@Unique(["task", "event"])
-@Unique(["task", "event", "user"])
+// @Unique(["task", "event"])
+@Unique(["eventTask", "user"])
 export class VolunteerAssignment {
   @PrimaryGeneratedColumn()
   id: number
@@ -30,13 +31,20 @@ export class VolunteerAssignment {
 
   @ManyToOne(() => User, (user) => user.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
   user: User;
-  @ManyToOne(() => Task, (task) => task.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
-  task: Task;
-  @ManyToOne(() => Event, (event) => event.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
-  event: Event;
+  //add columns for each key of the primary key couple in EventTask
+  @ManyToOne(() => EventTask, (eventTask) => eventTask.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn([
+    { name: "eventTaskEventId", referencedColumnName: "event" },
+    { name: "eventTaskTaskId", referencedColumnName: "task" },
+  ])
+  eventTask: EventTask;
+  // @ManyToOne(() => Task, (task) => task.volunteer_assignments, { nullable: false, onDelete: 'CASCADE' })
+  // task: Task;
+  // @ManyToOne(() => Event, (event) => event.volunteer_assignments, { nullable: false, onDelete: 'CASCADE' })
+  // event: Event;
 
   @CreateDateColumn()
-  created_at: Date
+  createdAt: Date
   @UpdateDateColumn()
-  updated_at: Date
+  updatedAt: Date
 }
