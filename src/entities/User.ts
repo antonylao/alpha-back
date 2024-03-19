@@ -15,6 +15,8 @@ export class User {
   @Column({
     type: "enum",
     enum: Role,
+    default: Role.VOLUNTEER,
+    readonly: true
   })
   role: Role; //define with "Role.<ENUM>"
   @Column({ type: "varchar", length: 75 })
@@ -41,5 +43,6 @@ export class User {
   created_at: Date
   @UpdateDateColumn()
   updated_at: Date
+
 }
 
