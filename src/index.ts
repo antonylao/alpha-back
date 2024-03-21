@@ -1,9 +1,10 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import { Request, Response } from "express";
 import * as dotenv from "dotenv"
 import { Routes } from "./routes";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
+import { AppError } from "./utils/AppError";
 
 const app = express()
 dotenv.config()
@@ -14,7 +15,7 @@ AppDataSource.initialize()
 
         app.use(bodyParser.json())
         Routes.forEach(route => {
-            (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
+            (app as any)[route.method](route.route, (req: Request, res: Response, next: NextFunction) => {
                 const result = (new (route.controller as any))[route.action](req, res, next)
                 if (result instanceof Promise) {
                     result.then(
@@ -28,6 +29,19 @@ AppDataSource.initialize()
             //     const result = (new route.controller)[route.action](req, res, next)
             //     res.send(result)
             // })
+
+            //error handling
+            app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+                if (res.headersSent) {
+                    return next(err)
+                }
+                if (err instanceof AppError) {
+                    res.status(err.httpCode).send(err)
+                    return
+                }
+                const message = err.message ? err.message : err
+                res.status(500).send({ message })
+            })
         })
     }).catch((err) => {
         console.error("Error during Data Source initialization", err)
