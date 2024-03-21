@@ -67,4 +67,53 @@ export class UserService {
       throw error
     }
   }
+
+
+  async update(id: number, user: Partial<User>): Promise<User> {
+    await this.userRepository.update(id, user);
+    console.log("🚀 ~ UserService ~ update ~ user:", user)
+    return this.userRepository.findOne({ where: { id } });
+  }
+
+  async getVolunteerChangePassword(id: number): Promise<User> {
+    const userId = await this.userRepository.findOne({
+      where: {
+        id,
+        role: Role.VOLUNTEER
+      },
+      select: {
+        id: true,
+        password: true
+      }
+    });
+    console.log("🚀 ~ UserService ~ getById ~ userId:", userId)
+    return userId
+  }
+
+  async getOrganiserChangePassword(id: number): Promise<User> {
+    const userId = await this.userRepository.findOne({
+      where: {
+        id,
+        role: Role.ADMIN
+      },
+      select: {
+        id: true,
+        password: true
+      }
+    });
+    console.log("🚀 ~ UserService ~ getById ~ userId:", userId)
+    return userId
+  }
+
+  async updatePassword(id: number, user: Pick<User, "password">): Promise<User> {
+    await this.userRepository.update(id, user);
+    console.log("🚀 ~ UserService ~ update ~ user:", user)
+    return this.userRepository.findOne({
+      where: { id },
+      select: {
+        id: true,
+        password: true
+      }
+    });
+  }
 }

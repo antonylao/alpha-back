@@ -8,6 +8,7 @@ import { AppError } from "./utils/AppError";
 
 const app = express()
 dotenv.config()
+console.log('variable : '+ process.env.DB_PORT)
 
 AppDataSource.initialize()
     .then(() => {

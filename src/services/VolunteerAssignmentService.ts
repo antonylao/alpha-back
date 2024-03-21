@@ -1,10 +1,8 @@
-import { LessThan, Raw } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { VolunteerAssignment } from "../entities/VolunteerAssignment";
-import { DateUtils } from "../utils/DateUtils";
 import { VolunteerAssignmentQueries } from "../utils/queries";
 import { Role, User } from "../entities/User";
 import { AppError, HttpCode } from "../utils/AppError";
+import { Status, VolunteerAssignment } from "../entities/VolunteerAssignment";
 
 export class VolunteerAssignmentService {
   private volunteerAssignmentRepository = AppDataSource.getRepository(VolunteerAssignment)
@@ -29,5 +27,81 @@ export class VolunteerAssignmentService {
     } catch (error) {
       throw error
     }
+  }
+
+  async getAllComments(): Promise<VolunteerAssignment[]> {
+    const comments = this.volunteerAssignmentRepository.find({
+      relations: {
+        eventTask: {
+          event: {
+            room: true
+          },
+          task: true,
+        },
+        user: true,
+      },
+      select: {
+        id: true,
+        volunteerComment: true,
+        eventTask: {
+          event: {
+            room: {
+              name: true
+            },
+            title: true,
+            type: true,
+            startOn: true
+          },
+          task: {
+            name: true,
+          },
+        },
+        user: {
+          firstname: true,
+          lastname: true
+        }
+      }
+    })
+    return comments
+  }
+
+  async getAllPendingRequests(): Promise<VolunteerAssignment[]> {
+    const pendingRequest = this.volunteerAssignmentRepository.find({
+      relations: {
+        eventTask: {
+          event: {
+            room: true
+          },
+          task: true,
+        },
+        user: true,
+      },
+      select: {
+        id: true,
+        status: true,
+        eventTask: {
+          event: {
+            room: {
+              name: true
+            },
+            title: true,
+            type: true,
+            startOn: true
+          },
+          task: {
+            name: true,
+          },
+        },
+        user: {
+          firstname: true,
+          lastname: true
+        }
+      },
+      where: {
+        status: Status.PENDING
+      },
+    })
+    console.log("🚀 ~ VolunteerAssignmentService ~ getAllPendingRequests ~ pendingRequest:", pendingRequest)
+    return pendingRequest
   }
 }
