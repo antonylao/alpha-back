@@ -1,3 +1,5 @@
+import {EventController} from '../src/controllers/EventController'
+
 export const Routes = [
     // {
     //     method: "", // get, post, patch, put, delete
@@ -5,5 +7,10 @@ export const Routes = [
     //     controller: , // nom du fichier
     //     action: "" // nom de la fonction dans le fichier
     // },
-
+    {
+        method: "get",
+        route: "/event",
+        controller: EventController,
+        action: "getAllEvents"
+    },
 ]
