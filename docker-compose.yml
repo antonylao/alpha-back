@@ -12,7 +12,7 @@ services:
       # Password for root access
       MYSQL_ROOT_PASSWORD: "root"
     ports:
-      - "3307:3306"
+      - "3308:3306"
     volumes:
       - projet_alpha_sql:/var/lib/mysql
   phpmyadmin:
@@ -24,6 +24,6 @@ services:
       PMA_PORT: 3306
     restart: always
     ports:
-      - 8081:80
+      - 8080:80
 volumes:
   projet_alpha_sql:
