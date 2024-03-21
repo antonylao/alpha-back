@@ -1,5 +1,6 @@
 import { UserController } from "./controllers/UserController";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignementController";
+import {EventController} from '../src/controllers/EventController'
 
 export const Routes = [
     { // ** readVolunteer
@@ -62,5 +63,17 @@ export const Routes = [
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readAllPendingRequests" // nom de la fonction dans le fichier
     },
+
+    // route pour event
+
+    {
+        method: "get",
+        route: "/event",
+        controller: EventController,
+        action: "getAllEvents"
+    },
+
+
+
 
 ]

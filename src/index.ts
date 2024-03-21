@@ -7,6 +7,7 @@ import { AppDataSource } from "./data-source";
 
 const app = express()
 dotenv.config()
+console.log('variable : '+ process.env.DB_PORT)
 
 AppDataSource.initialize()
     .then(() => {
