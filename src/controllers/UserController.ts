@@ -127,4 +127,31 @@ export class UserController {
       res.send(err.message)
     }
   }
+
+  async applyWarning(req: Request, res: Response, next: Function) {
+    try {
+      const id = +req.params.volunteerId
+      //récup de la data // data existe ? non: 404
+      const user = await this.userService.getVolunteerById(+id)
+      //modify obj
+      user.warning = true
+      //modify BDD
+      return await this.userService.update(id, user)
+    } catch (error) {
+      next(error)
+    }
+  }
+  async applyBan(req: Request, res: Response, next: Function) {
+    try {
+      const id = +req.params.volunteerId
+      //récup de la data // data existe ? non: 404
+      const user = await this.userService.getVolunteerById(+id)
+      //modify obj
+      user.ban = true
+      //modify BDD
+      return await this.userService.update(id, user)
+    } catch (error) {
+      next(error)
+    }
+  }
 }

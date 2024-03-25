@@ -42,6 +42,19 @@ export const Routes = [
         controller: UserController, // nom du fichier
         action: "updateVolunteerPassword" // nom de la fonction dans le fichier
     },
+    {
+        method: "patch",
+        route: "/volunteer/:volunteerId/warning",
+        controller: UserController,
+        action: "applyWarning"
+    },
+    {
+        method: "patch",
+        route: "/volunteer/:volunteerId/ban",
+        controller: UserController,
+        action: "applyBan"
+    },
+
 
     //*VOLUNTEER ASSIGNMENTS
     {
@@ -62,6 +75,13 @@ export const Routes = [
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readAllPendingRequests" // nom de la fonction dans le fichier
     },
+    {
+        method: "patch",
+        route: "/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
+        controller: VolunteerAssignmentController,
+        action: "updateRating"
+    },
+
 
     //*ORGANISER
     { // ** readOrganiser

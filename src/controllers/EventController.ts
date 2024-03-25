@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { EventService } from "../services/EventService";
 
 const eventService = new EventService();
 
 export class EventController {
-   async getAllEvents(req: Request, res: Response) {
+  async getAllEvents(req: Request, res: Response) {
     try {
       const events = await eventService.getAllEvents();
       res.json(events);
@@ -13,7 +13,15 @@ export class EventController {
     }
   }
 
-   async getEventById(req: Request, res: Response) {
+  async getAllUpcomingEvents(req: Request, res: Response, next: NextFunction) {
+    try {
+      return "in dvp"
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getEventById(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     try {
       const event = await eventService.getEventById(id);
@@ -27,7 +35,7 @@ export class EventController {
     }
   }
 
-   async createEvent(req: Request, res: Response) {
+  async createEvent(req: Request, res: Response) {
     try {
       const newEvent = await eventService.createEvent(req.body);
       res.status(201).json(newEvent);
@@ -36,7 +44,7 @@ export class EventController {
     }
   }
 
-   async updateEvent(req: Request, res: Response) {
+  async updateEvent(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     try {
       const updatedEvent = await eventService.updateEvent(id, req.body);
@@ -50,7 +58,7 @@ export class EventController {
     }
   }
 
-   async deleteEvent(req: Request, res: Response) {
+  async deleteEvent(req: Request, res: Response) {
     const id = parseInt(req.params.id);
     try {
       const result = await eventService.deleteEvent(id);

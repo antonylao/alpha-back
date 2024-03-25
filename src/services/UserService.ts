@@ -7,6 +7,32 @@ import { AppError, HttpCode } from "../utils/AppError";
 export class UserService {
   private userRepository = AppDataSource.getRepository(User)
 
+  async validVolunteerId(id: number): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: id, role: Role.VOLUNTEER },
+      select: { id: true }
+    });
+
+    if (user === null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async validOrganiserId(id: number): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: id, role: Role.ADMIN },
+      select: { id: true }
+    });
+
+    if (user === null) {
+      return false;
+    }
+
+    return true;
+  }
+
   async getVolunteerById(id: number): Promise<User> {
     try {
       const user = await this.userRepository.findOne({ where: { id: id, role: Role.VOLUNTEER } });
@@ -19,6 +45,8 @@ export class UserService {
       throw error
     }
   }
+
+
   async getOrganiserById(id: number): Promise<User> {
     try {
       const user = await this.userRepository.findOne({
