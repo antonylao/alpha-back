@@ -5,9 +5,12 @@ import { Routes } from "./routes";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
 import { AppError } from "./utils/AppError";
+import cors from "cors";
+dotenv.config()
 
 const app = express()
-dotenv.config()
+app.use(cors());
+
 console.log('variable : '+ process.env.DB_PORT)
 
 AppDataSource.initialize()
