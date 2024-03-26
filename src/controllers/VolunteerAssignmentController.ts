@@ -5,6 +5,7 @@ import { VolunteerAssignment } from "../entities/VolunteerAssignment";
 
 export class VolunteerAssignmentController {
   private volunteerAssignmentService = new VolunteerAssignmentService()
+
   async readPastEventsInfoForOrganiserVolunteerCard(req: Request, res: Response, next: NextFunction) {
     try {
       return await this.volunteerAssignmentService.getPastEventsInfoForOrganiserVolunteerCard(+req.params.volunteerId)
@@ -13,7 +14,6 @@ export class VolunteerAssignmentController {
     }
   }
 
-
   async readAllComments(req: Request, res: Response, next: Function): Promise<{ comments?: VolunteerAssignment[], message: string }> {
     try {
       const comments = await this.volunteerAssignmentService.getAllComments()
@@ -21,7 +21,7 @@ export class VolunteerAssignmentController {
       if (!comments && comments === null) {
         throw new Error("il n'y a pas encore de commentaires")
       } else {
-        console.log("🚀 ~ VolunteerAssignmentController ~ readAllComments ~ comments:", comments)
+        console.log("🚀 ~ VolunteerAssignmentController ~ readAllComments ~ comments:", comments[0].eventTask.event.id)
         return { comments, message: "On à retrouvé les commentaires!" };
       }
     } catch (err) {

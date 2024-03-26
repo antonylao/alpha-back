@@ -1,7 +1,5 @@
-import { Not } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Role, User } from "../entities/User";
-import { VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { AppError, HttpCode } from "../utils/AppError";
 
 export class UserService {
@@ -19,6 +17,7 @@ export class UserService {
       throw error
     }
   }
+
   async getOrganiserById(id: number): Promise<User> {
     try {
       const user = await this.userRepository.findOne({
@@ -67,7 +66,6 @@ export class UserService {
       throw error
     }
   }
-
 
   async update(id: number, user: Partial<User>): Promise<User> {
     await this.userRepository.update(id, user);

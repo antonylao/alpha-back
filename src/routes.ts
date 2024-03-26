@@ -63,6 +63,7 @@ export const Routes = [
         action: "readAllPendingRequests" // nom de la fonction dans le fichier
     },
 
+
     //*ORGANISER
     { // ** readOrganiser
         method: "get", // get, post, patch, put, delete
@@ -90,15 +91,58 @@ export const Routes = [
     },
 
     //* EVENT
-    {
+    { // ** getAllEvents
         method: "get",
         route: "/event",
         controller: EventController,
         action: "getAllEvents"
     },
-
-
-
-
-
+    { // ** getEventById
+        method: "get",
+        route: "/event/:id",
+        controller: EventController,
+        action: "getEventById"
+    },
+    { // ** readCommentsByEventId
+        method: "get",
+        route: "/event/:event_id/comments",
+        controller: EventController,
+        action: "readCommentsByEventId"
+    },
+    { // ** readRatingsByEventId
+        method: "get",
+        route: "/event/:event_id/ratings",
+        controller: EventController,
+        action: "readRatingsByEventId"
+    },
+    { // ** createEvent
+        method: "post",
+        route: "/event",
+        controller: EventController,
+        action: "createEvent"
+    },
+    { // ** updateEvent
+        method: "put",
+        route: "/event",
+        controller: EventController,
+        action: "updateEvent"
+    },
+    { // ** deleteEvent
+        method: "delete",
+        route: "/event",
+        controller: EventController,
+        action: "deleteEvent"
+    },
+    { // ** updateRatingsByEventId
+        method: "put",
+        route: "/event/:event_id/task/:task_id/user/:user_id/rating",
+        controller: EventController,
+        action: "updateRatingsByEventId"
+    },
+    { // ** updateStatusByEventId
+        method: "put",
+        route: "/event/:event_id/task/:task_id/user/:user_id/volunteer_assignment",
+        controller: EventController,
+        action: "updateStatusByEventId"
+    },
 ]

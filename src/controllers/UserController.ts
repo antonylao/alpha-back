@@ -5,6 +5,7 @@ import { UserService } from "../services/UserService";
 
 export class UserController {
   private userService = new UserService()
+
   async readAllVolunteersForOrganiserVolunteerIndex(req: Request, res: Response, next: NextFunction) {
     try {
       return await this.userService.getAllVolunteers()
@@ -12,7 +13,6 @@ export class UserController {
       next(error)
     }
   }
-
 
   async readVolunteer(req: Request, res: Response, next: Function): Promise<{ user?: User, message: string }> {
     try {

@@ -3,6 +3,7 @@ import { VolunteerAssignmentQueries } from "../utils/queries";
 import { Role, User } from "../entities/User";
 import { AppError, HttpCode } from "../utils/AppError";
 import { Status, VolunteerAssignment } from "../entities/VolunteerAssignment";
+import { EventTask } from "../entities/EventTask";
 
 export class VolunteerAssignmentService {
   private volunteerAssignmentRepository = AppDataSource.getRepository(VolunteerAssignment)
@@ -48,6 +49,7 @@ export class VolunteerAssignmentService {
             room: {
               name: true
             },
+            id: true,
             title: true,
             type: true,
             startOn: true
@@ -86,7 +88,8 @@ export class VolunteerAssignmentService {
             },
             title: true,
             type: true,
-            startOn: true
+            startOn: true, 
+            id: true
           },
           task: {
             name: true,
@@ -98,10 +101,11 @@ export class VolunteerAssignmentService {
         }
       },
       where: {
-        status: Status.PENDING
+        status: Status.PENDING,
       },
     })
     console.log("🚀 ~ VolunteerAssignmentService ~ getAllPendingRequests ~ pendingRequest:", pendingRequest)
     return pendingRequest
   }
+
 }
