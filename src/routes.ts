@@ -96,7 +96,49 @@ export const Routes = [
         controller: EventController,
         action: "getAllEvents"
     },
-
+    
+    {
+        method: "get",
+        route: "/event/title/:title",
+        controller: EventController,
+        action: "getEventByTitle"
+    },
+    {
+        method: "get",
+        route: "/event/type/:type",
+        controller: EventController,
+        action: "getEventByType"
+    },
+    {
+        method: "get",
+        route: "/event/:id",
+        controller: EventController,
+        action: "getEventById"
+    },
+    {
+        method: "get",
+        route: "/event/date/:date",
+        controller: EventController,
+        action: "getEventsByDate"
+    },
+    {
+        method: "post",
+        route: "/event",
+        controller: EventController,
+        action: "createEvent"
+    },
+    {
+        method: "put",
+        route: "/event/:id",
+        controller: EventController,
+        action: "updateEvent"
+    },
+    {
+        method: "delete",
+        route: "/event/:id",
+        controller: EventController,
+        action: "deleteEvent"
+    },
 
 
 

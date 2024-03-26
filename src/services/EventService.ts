@@ -1,5 +1,5 @@
-import { Connection, EntityManager, FindOneOptions, Repository } from "typeorm";
-import { Event } from "../entities/Event";
+import { Connection, EntityManager, FindManyOptions, FindOneOptions, FindOptions, FindOptionsWhere, Like, Repository } from "typeorm";
+import { Event, EventType } from "../entities/Event";
 import { AppDataSource } from "../data-source";
 
 
@@ -17,6 +17,26 @@ export class EventService {
     const byId :FindOneOptions<Event> = {where:{id}};
     return await this.eventRepository.findOne(byId);
   }
+  
+  async getEventByTitle(title: string): Promise<Event[] | undefined> {
+    
+    return await this.eventRepository.find({ where: { title:title } });
+  }
+
+  async getEventByType(type: number): Promise<Event [] | undefined> {
+   
+    return await this.eventRepository.find( { where: { type: type } });
+   
+  }
+
+  // recherche par date 
+
+  async getEventsByDate(date: Date): Promise<Event[]  | undefined> {
+   console.log("recherche: "+ date);
+    return await this.eventRepository.find({ where: { startOn: date } });
+  }
+
+
 
   async createEvent(eventData: Partial<Event>): Promise<Event> {
     const newEvent = this.eventRepository.create(eventData);
@@ -41,7 +61,5 @@ export class EventService {
     return false;
   }
 }
-function InjectRepository(Kennel: any): (target: typeof EventService, propertyKey: undefined, parameterIndex: 0) => void {
-  throw new Error("Function not implemented.");
-}
+
 

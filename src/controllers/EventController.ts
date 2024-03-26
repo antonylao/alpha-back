@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { EventService } from "../services/EventService";
+import { EventType } from "../entities/Event";
 
 const eventService = new EventService();
 
 export class EventController {
+  eventService: any;
    async getAllEvents(req: Request, res: Response) {
     try {
       const events = await eventService.getAllEvents();
@@ -26,6 +28,54 @@ export class EventController {
       res.status(500).json({ message: error.message });
     }
   }
+
+// by Name, by category, by date soon, by date expired
+  async getEventByTitle(req: Request, res: Response) {
+  const title = req.params.title as string;
+  try {
+    const event = await eventService.getEventByTitle(title);
+    if (event) {
+      res.json(event);
+    } else {
+      res.status(404).json({ message: "Event not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async getEventByType(req: Request, res: Response) {
+  const typeParam = +req.params.type ; 
+ console.log( " type du param: " + typeParam);
+  try {
+    const event = await eventService.getEventByType(typeParam);
+    if (event) {
+      res.json(event);
+    } else {
+      res.status(404).json({ message: "Event not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async getEventsByDate(req: Request, res: Response) {
+  let date: Date;
+  const dateParam = req.params.date;
+  
+  if (/^\d{4}$/.test(dateParam)) {
+    date = new Date(parseInt(dateParam), 0, 1);
+    console.log("format de dateparam: "+ dateParam)
+  } else {
+    date = new Date(dateParam);
+  }
+  try {
+    const events = await eventService.getEventsByDate(date);
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
    async createEvent(req: Request, res: Response) {
     try {
@@ -64,3 +114,5 @@ export class EventController {
     }
   }
 }
+
+
