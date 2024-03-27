@@ -1,30 +1,41 @@
 import { Request, Response } from "express";
 import { EventService } from "../services/EventService";
-import { VolunteerAssignmentService } from "../services/VolunteerAssignmentService";
 import { VolunteerAssignment } from "../entities/VolunteerAssignment";
+import { Event } from "../entities/Event";
+import { HttpCode } from "../utils/AppError";
 
 
 export class EventController {
 
   private eventService = new EventService();
   
-  async getAllEvents(req: Request, res: Response) {
+  async getAllEvents(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event[], message: string }> {
     try {
-      const events = await this.eventService.getAllEvents();
-      res.json(events);
+      const events = await this.eventService.getAllEvents();      
       console.log("🚀 ~ EventController ~ getAllEvents ~ events:", events)
+      return {
+        status: HttpCode.OK,
+        datas: events,
+        message: "On a retouvé les events!"
+        // res.json(events);
+      }
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
 
-  async getEventById(req: Request, res: Response) {
+  async getEventById(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event, message: string }> {
     const id = parseInt(req.params.id);
     try {
       const event = await this.eventService.getEventById(id);
       if (event) {
-        res.json(event);
         console.log("🚀 ~ EventController ~ getEventById ~ event:", event)
+        return {
+          status: HttpCode.OK,
+          datas: event,
+          message: "On a retouvé l'event!"
+        }
+        // res.json(event);
       } else {
         res.status(404).json({ message: "Event not found" });
       }
@@ -33,21 +44,25 @@ export class EventController {
     }
   }
 
-  async readCommentsByEventId(req: Request, res: Response, next: Function): Promise<{ event?: VolunteerAssignment[], message: string }> {
+  async readCommentsByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.getCommentsByEventId(+req.params.event_id)
       if (!event && event === null) {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
         console.log("🚀 ~ EventController ~ readCommentsByEventId ~ event:", event)
-        return { event, message: "On à retrouvé les commentaires!" };
+        return {
+          status: HttpCode.OK,
+          datas: event,
+          message: "On à retrouvé les commentaires!"
+        }
       }
     } catch (err) {
       res.send(err.message)
     }
   }
 
-  async readRatingsByEventId(req: Request, res: Response, next: Function): Promise<{ event?: VolunteerAssignment[], message: string }> {
+  async readRatingsByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.getRatingsByEventId(+req.params.event_id)
       console.log("🚀 ~ EventController ~ readRatingsByEventId ~ event:", event)
@@ -55,29 +70,37 @@ export class EventController {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
         console.log("🚀 ~ EventController ~ readRatingsByEventId ~ event ratings:", event)
-        return { event, message: "On à retrouvé les ratings!" };
+        return {
+          status: HttpCode.OK,
+          datas: event,
+          message: "On à retrouvé les ratings!"
+        }
       }
     } catch (err) {
       res.send(err.message)
     }
   }
 
-  async updateRatingsByEventId(req: Request, res: Response, next: Function): Promise<{ event?: VolunteerAssignment[], message: string }> {
+  async updateRatingsByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.updateRatingsFromEvent(+req.params.event_id, +req.params.task_id, +req.params.user_id, req.body)
-      console.log("🚀 ~ EventController ~ updateRatingsFromEvent ~ event:", event)
+      console.log("🚀 ~ EventController ~ updateRatingsByEventId ~ event:", event)
       if (!event && event === null) {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
-        return { event, message: "On à retrouvé le rating!" };
-        console.log("🚀 ~ EventController ~ updateRatingsFromEvent ~ event ratings:", event)
+        console.log("🚀 ~ EventController ~ updateRatingsByEventId ~ event ratings:", event)
+        return {
+          status: HttpCode.OK,
+          datas: event,
+          message: "On à mis le rating à jour!"
+        }
       }
     } catch (err) {
       res.send(err.message)
     }
   }
 
-  async updateStatusByEventId(req: Request, res: Response, next: Function): Promise<{ event?: VolunteerAssignment[], message: string }> {
+  async updateStatusByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.updateStatusFromEvent(+req.params.event_id, +req.params.task_id, +req.params.user_id, req.body)
       console.log("🚀 ~ EventController ~ updateStatusFromEvent ~ event:", event)
@@ -85,28 +108,42 @@ export class EventController {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
         console.log("🚀 ~ EventController ~ updateStatusFromEvent ~ event ratings:", event)
-        return { event, message: "On à retrouvé le rating!" };
+        return {
+          status: HttpCode.OK,
+          datas: event,
+          message: "On à mis le status à jour!"
+        }
       }
     } catch (err) {
       res.send(err.message)
     }
   }
 
-  async createEvent(req: Request, res: Response) {
+  async createEvent(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event, message: string }> {
     try {
       const newEvent = await this.eventService.createEvent(req.body);
-      res.status(201).json(newEvent);
+      return {
+        status: HttpCode.OK,
+        datas: newEvent,
+        message: "On à créé l'event!"
+      }
+      // res.status(201).json(newEvent);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
 
-  async updateEvent(req: Request, res: Response) {
-    const id = parseInt(req.params.id);
+  async updateEvent(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event, message: string }> {
+    const id = parseInt(req.params.event_id);
     try {
       const updatedEvent = await this.eventService.updateEvent(id, req.body);
       if (updatedEvent) {
-        res.json(updatedEvent);
+        return {
+          status: HttpCode.OK,
+          datas: updatedEvent,
+          message: "On à mis l'event à jour!"
+        }
+        // res.json(updatedEvent);
       } else {
         res.status(404).json({ message: "Event not found" });
       }
@@ -115,12 +152,17 @@ export class EventController {
     }
   }
 
-  async deleteEvent(req: Request, res: Response) {
-    const id = parseInt(req.params.id);
+  async deleteEvent(req: Request, res: Response): Promise<{ status: HttpCode, datas?: boolean, message: string }> {
+    const id = parseInt(req.params.event_id);
     try {
       const result = await this.eventService.deleteEvent(id);
       if (result) {
-        res.json({ message: "Event deleted successfully" });
+        return {
+          status: HttpCode.OK,
+          datas: result,
+          message: "On à supprimé l'event!"
+        }
+        // res.json({ message: "Event deleted successfully" });
       } else {
         res.status(404).json({ message: "Event not found" });
       }

@@ -104,6 +104,24 @@ export const Routes = [
         controller: EventController,
         action: "getEventById"
     },
+    { // ** createEvent
+        method: "post",
+        route: "/event",
+        controller: EventController,
+        action: "createEvent"
+    },
+    { // ** updateEvent
+        method: "put",
+        route: "/event/:event_id",
+        controller: EventController,
+        action: "updateEvent"
+    },
+    { // ** deleteEvent
+        method: "delete",
+        route: "/event/:event_id",
+        controller: EventController,
+        action: "deleteEvent"
+    },
     { // ** readCommentsByEventId
         method: "get",
         route: "/event/:event_id/comments",
@@ -116,24 +134,6 @@ export const Routes = [
         controller: EventController,
         action: "readRatingsByEventId"
     },
-    { // ** createEvent
-        method: "post",
-        route: "/event",
-        controller: EventController,
-        action: "createEvent"
-    },
-    { // ** updateEvent
-        method: "put",
-        route: "/event",
-        controller: EventController,
-        action: "updateEvent"
-    },
-    { // ** deleteEvent
-        method: "delete",
-        route: "/event",
-        controller: EventController,
-        action: "deleteEvent"
-    },
     { // ** updateRatingsByEventId
         method: "put",
         route: "/event/:event_id/task/:task_id/user/:user_id/rating",
@@ -142,7 +142,7 @@ export const Routes = [
     },
     { // ** updateStatusByEventId
         method: "put",
-        route: "/event/:event_id/task/:task_id/user/:user_id/volunteer_assignment",
+        route: "/event/:event_id/task/:task_id/user/:user_id/status",
         controller: EventController,
         action: "updateStatusByEventId"
     },
@@ -167,7 +167,7 @@ export const Routes = [
         controller: EventTaskController,
         action: "updateEventTaskRequiredVolunteersById"
     },
-    { // ** updateEventTaskRequiredVolunteersById
+    { // ** deleteEventTaskById
         method: "delete",
         route: "/event/:event_id/task/:task_id",
         controller: EventTaskController,
