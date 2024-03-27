@@ -21,7 +21,7 @@ export class EventService {
   }
 
   async getEventById(id: number): Promise<Event | undefined> {
-    const byId: FindOneOptions<Event> = { where: { id } };
+    const byId: FindOneOptions<Event> = { where: { id }, relations: {eventTasks: true} };
     return await this.eventRepository.findOne(byId);
   }
 

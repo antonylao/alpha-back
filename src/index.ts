@@ -8,7 +8,7 @@ import { AppError } from "./utils/AppError";
 
 const app = express()
 dotenv.config()
-console.log('variable : '+ process.env.DB_PORT)
+console.log('variable : ' + process.env.DB_PORT)
 
 AppDataSource.initialize()
     .then(() => {
@@ -30,7 +30,11 @@ AppDataSource.initialize()
             //     const result = (new route.controller)[route.action](req, res, next)
             //     res.send(result)
             // })
-
+            app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+                res.header("Access-Control-Allow-Origin", "*"),
+                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"),
+                    next()
+            })
             //error handling
             app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
                 if (res.headersSent) {

@@ -2,6 +2,7 @@ import { UserController } from "./controllers/UserController";
 import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
 import { EventController } from '../src/controllers/EventController'
+import { EventTaskController } from "./controllers/EventTaskController";
 
 export const Routes = [
     // {
@@ -12,7 +13,7 @@ export const Routes = [
     // },
 
     //*VOLUNTEER
-    {
+    { // ** readAllVolunteersForOrganiserVolunteerIndex
         method: "get",
         route: "/volunteer",
         controller: UserController,
@@ -144,5 +145,32 @@ export const Routes = [
         route: "/event/:event_id/task/:task_id/user/:user_id/volunteer_assignment",
         controller: EventController,
         action: "updateStatusByEventId"
+    },
+
+// ** EventTask
+
+    { // ** readEventTaskById
+        method: "get",
+        route: "/event/:event_id/task/:task_id",
+        controller: EventTaskController,
+        action: "readEventTaskById"
+    },
+    { // ** updateEventTaskProgressionById
+        method: "put",
+        route: "/event/:event_id/task/:task_id/progression",
+        controller: EventTaskController,
+        action: "updateEventTaskProgressionById"
+    },
+    { // ** updateEventTaskRequiredVolunteersById
+        method: "put",
+        route: "/event/:event_id/task/:task_id/required_volunteers",
+        controller: EventTaskController,
+        action: "updateEventTaskRequiredVolunteersById"
+    },
+    { // ** updateEventTaskRequiredVolunteersById
+        method: "delete",
+        route: "/event/:event_id/task/:task_id",
+        controller: EventTaskController,
+        action: "deleteEventTaskById"
     },
 ]

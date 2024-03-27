@@ -47,14 +47,28 @@ export class VolunteerAssignmentQueries {
 }
 
 export class EventTaskQueries {
-  static pastEventsInfoForOrganiserVolunteerCard = "\
-  SELECT va.userId, et.taskId, et.eventId, e.title AS eventTitle, e.startOn, t.name AS taskName, va.organiserRating \
-  FROM volunteer_assignment AS va \
-  LEFT JOIN event_task AS et ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
+  static taskFromEvent = "\
+  SELECT et.taskId, et.eventId, e.title AS eventTitle, e.description AS eventDescription, e.startOn, e.duration, e.picture, r.name, t.name AS taskName, et.progression, et.nbVolunteersRequired \
+  FROM event_task AS et \
   LEFT JOIN event AS e ON e.id = et.eventId \
   LEFT JOIN task AS t ON t.id = et.taskId \
-  WHERE ADDTIME(e.startOn, e.duration) < NOW() \
-   AND va.userId = ?; \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ?  ; \
   "
-  
+  static taskProgressionFromEvent = "\
+  SELECT et.taskId, et.eventId, e.title AS eventTitle, e.description AS eventDescription, e.startOn, e.duration, e.picture, r.name, t.name AS taskName, et.progression \
+  FROM event_task AS et \
+  LEFT JOIN event AS e ON e.id = et.eventId \
+  LEFT JOIN task AS t ON t.id = et.taskId \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ?  ; \
+  "
+  static taskRequiredVolunteersFromEvent = "\
+  SELECT et.taskId, et.eventId, e.title AS eventTitle, e.description AS eventDescription, e.startOn, e.duration, e.picture, r.name, t.name AS taskName, et.nbVolunteersRequired \
+  FROM event_task AS et \
+  LEFT JOIN event AS e ON e.id = et.eventId \
+  LEFT JOIN task AS t ON t.id = et.taskId \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ?  ; \
+  "
 }
