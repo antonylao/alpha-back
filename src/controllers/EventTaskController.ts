@@ -61,18 +61,19 @@ export class EventTaskController{
         }
       }
 
-    async deleteEventTaskById(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: EventTask[], message: string }> {
+    async deleteEventTaskById(req: Request, res: Response, next: Function): Promise<Response<{ status: HttpCode, datas?: EventTask[], message: string }>> {
         try {
           const eventTask = await this.eventTaskService.deleteEventTaskById(+req.params.event_id, +req.params.task_id)
           console.log("🚀 ~ EventTaskController ~ updateRatingsByEventId ~ event:", eventTask)
           if (!eventTask && eventTask === null) {
             throw new Error("pas de d'event à l'ID: " + req.params.event_id)
           } else {
-            return {
+            return res.status(HttpCode.NO_CONTENT).send(
+              {
               status: HttpCode.NO_CONTENT,
               datas: eventTask,
               message: "On à supprimé la tâche!"
-            }
+              })
           }
         } catch (err) {
           res.send(err.message)

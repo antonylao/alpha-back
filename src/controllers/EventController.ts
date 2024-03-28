@@ -8,10 +8,10 @@ import { HttpCode } from "../utils/AppError";
 export class EventController {
 
   private eventService = new EventService();
-  
+
   async getAllEvents(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event[], message: string }> {
     try {
-      const events = await this.eventService.getAllEvents();      
+      const events = await this.eventService.getAllEvents();
       console.log("🚀 ~ EventController ~ getAllEvents ~ events:", events)
       return {
         status: HttpCode.OK,
@@ -119,15 +119,17 @@ export class EventController {
     }
   }
 
-  async createEvent(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event, message: string }> {
+  async createEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
     try {
       const newEvent = await this.eventService.createEvent(req.body);
-      return {
-        status: HttpCode.CREATED,
-        datas: newEvent,
-        message: "On à créé l'event!"
-      }
       // res.status(201).json(newEvent);
+      return res.status(HttpCode.CREATED).send(
+        {
+          status: HttpCode.CREATED,
+          datas: newEvent,
+          message: "On à créé l'event!"
+        }
+      )
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -152,16 +154,17 @@ export class EventController {
     }
   }
 
-  async deleteEvent(req: Request, res: Response): Promise<{ status: HttpCode, datas?: boolean, message: string }> {
+  async deleteEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
     const id = parseInt(req.params.event_id);
     try {
       const result = await this.eventService.deleteEvent(id);
       if (result) {
-        return {
+        return res.status(HttpCode.NO_CONTENT).send(
+          {
           status: HttpCode.NO_CONTENT,
           datas: result,
           message: "On à supprimé l'event!"
-        }
+          })
         // res.json({ message: "Event deleted successfully" });
       } else {
         res.status(404).json({ message: "Event not found" });
