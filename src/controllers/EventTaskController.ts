@@ -69,7 +69,7 @@ export class EventTaskController{
             throw new Error("pas de d'event à l'ID: " + req.params.event_id)
           } else {
             return {
-              status: HttpCode.OK,
+              status: HttpCode.NO_CONTENT,
               datas: eventTask,
               message: "On à supprimé la tâche!"
             }

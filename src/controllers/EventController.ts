@@ -123,7 +123,7 @@ export class EventController {
     try {
       const newEvent = await this.eventService.createEvent(req.body);
       return {
-        status: HttpCode.OK,
+        status: HttpCode.CREATED,
         datas: newEvent,
         message: "On à créé l'event!"
       }
@@ -158,7 +158,7 @@ export class EventController {
       const result = await this.eventService.deleteEvent(id);
       if (result) {
         return {
-          status: HttpCode.OK,
+          status: HttpCode.NO_CONTENT,
           datas: result,
           message: "On à supprimé l'event!"
         }
