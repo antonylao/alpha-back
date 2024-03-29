@@ -2,6 +2,7 @@ import { UserController } from "./controllers/UserController";
 import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
 import { EventController } from '../src/controllers/EventController'
+import { EventTaskController } from "./controllers/EventTaskController";
 
 export const Routes = [
     // {
@@ -81,6 +82,34 @@ export const Routes = [
         controller: VolunteerAssignmentController,
         action: "updateRating"
     },
+    {
+        method: "get",
+        route: "/volunteer/:volunteerId/my_events",
+        controller: VolunteerAssignmentController,
+        action: "getFinishedAssignmentsInfo"
+    },
+    {
+        method: "patch",
+        route: "/volunteer/:volunteerId/event/:eventId/task/:taskId/comment",
+        controller: VolunteerAssignmentController,
+        action: "updateComment"
+    },
+
+    //TODO à changer : userId vient du token, pas d'un URL param
+    {
+        method: "post",
+        route: "/event/:eventId/task/:taskId/user/:volunteerId",
+        controller: VolunteerAssignmentController,
+        action: "createPendingVolunterAssignment"
+    },
+
+    //TODO à changer : userId vient du token, pas d'un URL param
+    {
+        method: "patch",
+        route: "/event/:eventId/task/:taskId/cancel/user/:volunteerId",
+        controller: VolunteerAssignmentController,
+        action: "cancelAssignment"
+    },
 
 
     //*ORGANISER
@@ -116,9 +145,20 @@ export const Routes = [
         controller: EventController,
         action: "getAllEvents"
     },
+    //get upcoming events for the volunteer app
+    {
+        method: "get",
+        route: "/upcoming_event",
+        controller: EventController,
+        action: "getAllUpcomingEvents"
+    },
 
 
-
-
-
+    //*EVENT_TASK
+    {
+        method: "get",
+        route: "/upcoming_event/:eventId/task",
+        controller: EventTaskController,
+        action: "getUpcomingEventInfosForTaskApply"
+    },
 ]

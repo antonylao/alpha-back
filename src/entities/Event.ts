@@ -4,9 +4,9 @@ import { EventTask } from "./EventTask";
 import { VolunteerAssignment } from "./VolunteerAssignment";
 
 export enum EventType {
-  CONCERT = "concert",
-  THEATRE = "theatre",
-  STANDUP = "standup"
+  CONCERT = 1,
+  THEATRE = 2,
+  STANDUP = 3
 }
 
 @Entity()

@@ -15,7 +15,10 @@ export class EventController {
 
   async getAllUpcomingEvents(req: Request, res: Response, next: NextFunction) {
     try {
-      return "in dvp"
+      return {
+        datas: await eventService.getAllUpcomingEvents(),
+        status: 200,
+      }
     } catch (error) {
       next(error)
     }

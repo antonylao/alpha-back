@@ -1,13 +1,10 @@
-import { Connection, EntityManager, FindOneOptions, Repository } from "typeorm";
+import { Connection, EntityManager, FindOneOptions, LessThan, MoreThan, Repository } from "typeorm";
 import { Event } from "../entities/Event";
 import { AppDataSource } from "../data-source";
 import { DateUtils } from "../utils/DateUtils";
 
 
 export class EventService {
-
-
-
   private eventRepository = AppDataSource.getRepository(Event);
 
   static eventFinished(obj: { date: Date, duration: string }): boolean {
@@ -16,6 +13,33 @@ export class EventService {
 
   async getAllEvents(): Promise<Event[]> {
     return await this.eventRepository.find();
+  }
+
+  async getAllUpcomingEvents() {
+    try {
+      return await this.eventRepository.find({
+        relations: {
+          room: true
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          startOn: true,
+          duration: true,
+          type: true,
+          room: {
+            name: true
+          },
+          picture: true
+        },
+        where: {
+          startOn: MoreThan(new Date())
+        }
+      })
+    } catch (error) {
+      throw error
+    }
   }
 
   async getEventById(id: number): Promise<Event | undefined> {
