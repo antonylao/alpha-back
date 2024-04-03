@@ -10,8 +10,8 @@ export type ReqParamIdsForCreation = { userId: number, eventId: number, taskId: 
 export class VolunteerAssignmentController {
   private volunteerAssignmentService = new VolunteerAssignmentService()
 
-  //TODO à changer: userId vient du token, pas d'un URL param
-  async createPendingVolunterAssignment(req: Request, res: Response, next: NextFunction): Promise<Response<{ status: HttpCode, datas?: VolunteerAssignment }>> {
+
+  async createPendingVolunterAssignment(req: Request, res: Response, next: NextFunction) {
     try {
       const params = req.params
       let paramsPartial: Omit<ReqParamIdsForCreation, "userId"> = {
@@ -19,20 +19,22 @@ export class VolunteerAssignmentController {
       };
 
       Object.keys(paramsPartial).forEach((idKey) => {
-        console.log("idKey: ", idKey)
         paramsPartial[idKey] = parseInt(params[idKey], 10)
       })
 
-      const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: +req.params.volunteerId }
+      //* en utilisant ULR param
+      // const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: +req.params.volunteerId }
+      //* avec token
+      const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: req.user.id }
+      console.log("🚀 ~ VolunteerAssignmentController ~ createPendingVolunterAssignment ~ paramsInt:", paramsInt)
+
 
       const assignment = await this.volunteerAssignmentService.createPendingVolunterAssignment(paramsInt)
 
-      return res.status(HttpCode.CREATED).send(
-        {
-          status: HttpCode.CREATED,
-          datas: assignment
-        }
-      )
+      return {
+        status: HttpCode.CREATED,
+        datas: assignment
+      }
     } catch (error) {
       next(error)
     }
@@ -179,7 +181,6 @@ export class VolunteerAssignmentController {
     }
   }
 
-  //TODO à changer: userId vient du token, pas d'un URL param
   async cancelAssignment(req: Request, res: Response, next: NextFunction) {
     try {
       //initialisation vars
@@ -193,7 +194,10 @@ export class VolunteerAssignmentController {
         paramsPartial[idKey] = parseInt(params[idKey], 10)
       })
 
-      const paramsInt: ReqParamIds = { ...paramsPartial, volunteerId: +req.params.volunteerId }
+      //* avec URL param
+      // const paramsInt: ReqParamIds = { ...paramsPartial, volunteerId: +req.params.volunteerId }
+      //* avec token
+      const paramsInt: ReqParamIds = { ...paramsPartial, volunteerId: req.user.id }
 
       //récup data 
       const assignment = await this.volunteerAssignmentService.getAssignmentForUpdate(paramsInt)
@@ -204,7 +208,8 @@ export class VolunteerAssignmentController {
       }
 
       //event non commencé && assignment validé ou pending? non => 403
-      if (assignment.startOn > new Date() || ![Status.ACCEPTED.toString(), Status.PENDING.toString()].includes(assignment.status)) {
+
+      if (assignment.startOn < new Date() || ![Status.ACCEPTED.toString(), Status.PENDING.toString()].includes(assignment.status)) {
         throw new AppError(HttpCode.FORBIDDEN, "Le statut ne peut pas être annulé car l'event a déjà commencé, ou le statut initial ne le permet pas")
       }
       //modif BDD
@@ -217,5 +222,6 @@ export class VolunteerAssignmentController {
     } catch (error) {
       next(error)
     }
+
   }
 }

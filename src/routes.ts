@@ -3,6 +3,7 @@ import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
 import { EventController } from '../src/controllers/EventController'
 import { EventTaskController } from "./controllers/EventTaskController";
+import { AuthController } from "./controllers/AuthController";
 
 export const Routes = [
     // {
@@ -11,6 +12,20 @@ export const Routes = [
     //     controller: , // nom du fichier
     //     action: "" // nom de la fonction dans le fichier
     // },
+
+    //*AUTH
+    {
+        method: "post",
+        route: "/auth/signup/volunteer",
+        controller: AuthController,
+        action: "registerVolunteer"
+    },
+    {
+        method: "post",
+        route: "/auth/signin/volunteer",
+        controller: AuthController,
+        action: "loginVolunteer"
+    },
 
     //*VOLUNTEER
     {
@@ -95,18 +110,16 @@ export const Routes = [
         action: "updateComment"
     },
 
-    //TODO à changer : userId vient du token, pas d'un URL param
     {
         method: "post",
-        route: "/event/:eventId/task/:taskId/user/:volunteerId",
+        route: "/api/event/:eventId/task/:taskId",
         controller: VolunteerAssignmentController,
         action: "createPendingVolunterAssignment"
     },
 
-    //TODO à changer : userId vient du token, pas d'un URL param
     {
         method: "patch",
-        route: "/event/:eventId/task/:taskId/cancel/user/:volunteerId",
+        route: "/api/event/:eventId/task/:taskId/cancel",
         controller: VolunteerAssignmentController,
         action: "cancelAssignment"
     },

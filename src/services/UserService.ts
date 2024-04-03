@@ -7,6 +7,14 @@ import { AppError, HttpCode } from "../utils/AppError";
 export class UserService {
   private userRepository = AppDataSource.getRepository(User)
 
+
+  //*not tested
+  async create(user: Partial<User>) {
+    const newUser = this.userRepository.create(user)
+    await this.userRepository.save(newUser)
+    return newUser
+  }
+
   async validVolunteerId(id: number): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: { id: id, role: Role.VOLUNTEER },
@@ -66,6 +74,14 @@ export class UserService {
       }
 
       return user
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getByEmail(email: string, role: Role) {
+    try {
+      return await this.userRepository.findOne({ where: { email, role } });
     } catch (error) {
       throw error
     }

@@ -5,11 +5,13 @@ import { Routes } from "./routes";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
 import { AppError } from "./utils/AppError";
+import { jwtCheck } from "./middlewares/jwtCheck";
 
 const app = express()
 dotenv.config()
-console.log('variable : '+ process.env.DB_PORT)
+console.log('variable : ' + process.env.DB_PORT)
 
+app.use("/api", jwtCheck)
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
@@ -20,7 +22,8 @@ AppDataSource.initialize()
                 const result = (new (route.controller as any))[route.action](req, res, next)
                 if (result instanceof Promise) {
                     result.then(
-                        result => result !== null && result !== undefined ? res.send(result) : undefined
+                        result => result !== null && result !== undefined ?
+                            result.status ? res.status(result.status).send(result) : res.send(result) : undefined
                     )
                 } else if (result !== null && result !== undefined) {
                     res.json(result)
