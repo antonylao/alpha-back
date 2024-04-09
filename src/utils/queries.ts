@@ -95,11 +95,11 @@ export class EventTaskQueries {
   LEFT JOIN event AS e ON e.id = et.eventId \
   LEFT JOIN task AS t ON t.id = et.taskId \
   LEFT JOIN (\
-      SELECT et.taskId, et.eventId, \
-      COUNT(CASE va.status WHEN ? THEN 1 ELSE NULL END) AS countValidatedAssignment \
-      FROM volunteer_assignment AS va \
-      LEFT JOIN event_task AS et ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
-      GROUP BY et.taskId, et.eventId\
+    SELECT et.taskId, et.eventId, \
+    COUNT(CASE va.status WHEN ? THEN 1 ELSE NULL END) AS countValidatedAssignment \
+    FROM event_task AS et \
+    LEFT JOIN volunteer_assignment AS va ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
+    GROUP BY et.taskId, et.eventId;\
   ) AS sub ON sub.taskId = et.taskId AND sub.eventId = et.eventId \
   WHERE et.eventId = ?  \
   ;"

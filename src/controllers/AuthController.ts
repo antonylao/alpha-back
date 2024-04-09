@@ -32,13 +32,15 @@ export class AuthController {
     try {
       //initialisation variables
       let password = req.body.password
-      //vérifier que le mail n'existe pas en BDD
+      //!vérifications: types du body, contraintes sur mdp, firstname, lastname, email, phone : non => erreur 400
+
+      //vérifier que le mail n'existe pas en BDD: non => erreur 409
       const user = await this.userService.getByEmail(req.body.email, Role.VOLUNTEER)
       if (user) {
         throw new AppError(HttpCode.CONFLICT, "Adresse mail déjà utilisée")
       }
 
-      //!autres vérifications: mdp, firstname, lastname, email, phone
+
       //hashage du mdp
       password = await bcrypt.hash(password, 10);
 

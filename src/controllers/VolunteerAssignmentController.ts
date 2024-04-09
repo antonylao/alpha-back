@@ -96,22 +96,41 @@ export class VolunteerAssignmentController {
     }
   }
 
-  //:volunteerId, :eventId, :taskId
+  //:eventId, :taskId
   //body: {comment: string }
   async updateComment(req: Request, res: Response, next: NextFunction) {
     try {
 
       //initialisation vars
+      // const params = req.params
+      // let paramsInt: ReqParamIds = {
+      //   volunteerId: -1, eventId: -1, taskId: -1
+      // };
+
+      // Object.keys(params).forEach((idKey) => {
+      //   paramsInt[idKey] = parseInt(params[idKey], 10)
+      // })
+
+      // const newComment = req.body.comment
+
       const params = req.params
-      let paramsInt: ReqParamIds = {
-        volunteerId: -1, eventId: -1, taskId: -1
+      let paramsPartial: Omit<ReqParamIds, "volunteerId"> = {
+        eventId: -1, taskId: -1
       };
 
-      Object.keys(params).forEach((idKey) => {
-        paramsInt[idKey] = parseInt(params[idKey], 10)
+      Object.keys(paramsPartial).forEach((idKey) => {
+        paramsPartial[idKey] = parseInt(params[idKey], 10)
       })
 
+      //* avec URL param
+      // const paramsInt: ReqParamIds = { ...paramsPartial, volunteerId: +req.params.volunteerId }
+      //* avec token
+      const paramsInt: ReqParamIds = { ...paramsPartial, volunteerId: req.user.id }
+
+
       const newComment = req.body.comment
+
+
       //données valide ? 400
       if (typeof newComment !== "string" || newComment.length === 0) {
         throw new AppError(HttpCode.BAD_REQUEST, "Le commentaire n'est pas valide")
@@ -123,7 +142,7 @@ export class VolunteerAssignmentController {
       if (assignment === null || assignment === undefined) {
         throw new AppError(HttpCode.NOT_FOUND, "La donnée n'existe pas")
       }
-      //event terminé et assignment is accepted et comment non null? non => 403
+      //event terminé et assignment is accepted et comment === null? non => 403
       if (!EventService.eventFinished({ date: assignment.startOn, duration: assignment.duration }) || assignment.status !== Status.ACCEPTED.toString() || assignment.volunteerComment !== null) {
         throw new AppError(HttpCode.FORBIDDEN, "Vous ne pouvez pas appliquer de commentaire pour cet event")
       }
@@ -190,7 +209,6 @@ export class VolunteerAssignmentController {
       };
 
       Object.keys(paramsPartial).forEach((idKey) => {
-        console.log("idKey: ", idKey)
         paramsPartial[idKey] = parseInt(params[idKey], 10)
       })
 

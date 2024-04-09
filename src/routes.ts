@@ -105,7 +105,7 @@ export const Routes = [
     },
     {
         method: "patch",
-        route: "/volunteer/:volunteerId/event/:eventId/task/:taskId/comment",
+        route: "/api/event/:eventId/task/:taskId/comment",
         controller: VolunteerAssignmentController,
         action: "updateComment"
     },
