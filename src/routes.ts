@@ -3,6 +3,7 @@ import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
 import { EventController } from '../src/controllers/EventController'
 import { EventTaskController } from "./controllers/EventTaskController";
+import { AuthController } from "./controllers/AuthController";
 
 export const Routes = [
     // {
@@ -11,6 +12,26 @@ export const Routes = [
     //     controller: , // nom du fichier
     //     action: "" // nom de la fonction dans le fichier
     // },
+    
+    //*AUTH
+    { // ** refreshToken
+        method: "post",
+        route: "/auth/refreshToken",
+        controller: AuthController,
+        action: "refreshToken"
+    },
+    { // ** registerVolunteer
+        method: "post",
+        route: "/auth/signup/volunteer",
+        controller: AuthController,
+        action: "registerVolunteer"
+    },
+    { // ** loginVolunteer
+        method: "post",
+        route: "/auth/signin/volunteer",
+        controller: AuthController,
+        action: "loginVolunteer"
+    },
 
     //*VOLUNTEER
     { // ** readAllVolunteersForOrganiserVolunteerIndex
@@ -21,25 +42,25 @@ export const Routes = [
     },
     { // ** readVolunteer
         method: "get", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer_profile", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readVolunteer" // nom de la fonction dans le fichier
     },
     { // ** updateVolunteer
         method: "put", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer_profile", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateVolunteer" // nom de la fonction dans le fichier
     },
     { // ** readVolunteerPassword
         method: "get", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readVolunteerPassword" // nom de la fonction dans le fichier
     },
     { // ** updateVolunteerPassword
         method: "put", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateVolunteerPassword" // nom de la fonction dans le fichier
     },
@@ -68,25 +89,25 @@ export const Routes = [
     //*ORGANISER
     { // ** readOrganiser
         method: "get", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readOrganiser" // nom de la fonction dans le fichier
     },
     { // ** updateOrganiser
         method: "put", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateOrganiser" // nom de la fonction dans le fichier
     },
     { // ** readOrganiserPassword
         method: "get", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readOrganiserPassword" // nom de la fonction dans le fichier
     },
     { // ** updateOrganiserPassword
         method: "put", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateOrganiserPassword" // nom de la fonction dans le fichier
     },
@@ -147,7 +168,7 @@ export const Routes = [
         action: "updateStatusByEventId"
     },
 
-// ** EventTask
+    // ** EventTask
 
     { // ** readEventTaskById
         method: "get",

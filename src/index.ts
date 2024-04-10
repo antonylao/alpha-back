@@ -5,11 +5,15 @@ import { Routes } from "./routes";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
 import { AppError } from "./utils/AppError";
+import { jwtCheck } from "./middlewares/jwtCheck";
+import { jwtCheckRefresh } from "./middlewares/jwtCheckRefresh";
 
 const app = express()
 dotenv.config()
 console.log('variable : ' + process.env.DB_PORT)
 
+app.use("/api", jwtCheck)
+app.use("/auth/refreshToken", jwtCheckRefresh)
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
@@ -30,11 +34,12 @@ AppDataSource.initialize()
             //     const result = (new route.controller)[route.action](req, res, next)
             //     res.send(result)
             // })
-            app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-                res.header("Access-Control-Allow-Origin", "*"),
-                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"),
-                    next()
-            })
+        //    app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+        //         res.header("Access-Control-Allow-Origin", "*"),
+        //             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"),
+        //             console.log("🚀 ~ app.use ~ next:", next(err))
+        //             next(err)
+        //     })
             //error handling
             app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
                 if (res.headersSent) {

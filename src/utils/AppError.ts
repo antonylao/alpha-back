@@ -6,6 +6,7 @@ export enum HttpCode {
   UNAUTHORIZED = 401, //authentification nécessaire
   FORBIDDEN = 403, // pas les droits d'accès
   NOT_FOUND = 404,
+  CONFLICT = 409, //mail existe déjà
   INTERNAL_SERVER_ERROR = 500,
 }
 

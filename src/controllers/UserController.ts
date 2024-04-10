@@ -22,9 +22,10 @@ export class UserController {
 
   async readVolunteer(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      const user = await this.userService.getVolunteerById(+req.params.volunteer_id)
+      const user = await this.userService.getVolunteerById(+req.user.id)
+      console.log("🚀 ~ UserController ~ readVolunteer ~ user:", req.user)
       if (!user && user === null) {
-        throw new Error("pas de bénévole à l'ID: " + req.params.volunteer_id)
+        throw new Error("pas de bénévole à l'ID: " + req.user.id)
       } else {
         return {
           status: HttpCode.OK,
@@ -39,9 +40,9 @@ export class UserController {
 
   async readOrganiser(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      const user = await this.userService.getOrganiserById(+req.params.organiser_id)
+      const user = await this.userService.getOrganiserById(+req.user.id)
       if (!user && user === null) {
-        throw new Error("pas d'organisateur à l'ID: " + req.params.organiser_id)
+        throw new Error("pas d'organisateur à l'ID: " + req.user.id)
       } else {
         return {
           status: HttpCode.OK,
@@ -56,9 +57,9 @@ export class UserController {
 
   async readVolunteerPassword(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      const user = await this.userService.getVolunteerChangePassword(+req.params.volunteer_id)
+      const user = await this.userService.getVolunteerChangePassword(+req.user.id)
       if (!user && user === null) {
-        throw new Error("pas de bénévole à l'ID: " + req.params.volunteer_id)
+        throw new Error("pas de bénévole à l'ID: " + req.user.id)
       } else {
         return {
           status: HttpCode.OK,
@@ -73,9 +74,9 @@ export class UserController {
 
   async readOrganiserPassword(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      const user = await this.userService.getOrganiserChangePassword(+req.params.organiser_id)
+      const user = await this.userService.getOrganiserChangePassword(+req.user.id)
       if (!user && user === null) {
-        throw new Error("pas d'organisateur à l'ID: " + req.params.organiser_id)
+        throw new Error("pas d'organisateur à l'ID: " + req.user.id)
       } else {
         return {
           status: HttpCode.OK,
@@ -90,9 +91,9 @@ export class UserController {
 
   async updateVolunteer(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      let user = await this.userService.getVolunteerById(+req.params.volunteer_id);
+      let user = await this.userService.getVolunteerById(+req.user.id);
       if (!user && user === undefined) {
-        throw new Error("pas de bénévoleà l'ID: " + req.params.volunteer_id)
+        throw new Error("pas de bénévoleà l'ID: " + req.user.id)
       } else {
         user = await this.userService.update(user.id, req.body);
         console.log("🚀 ~ UserController ~ update ~ user:", user)
@@ -109,9 +110,9 @@ export class UserController {
 
   async updateOrganiser(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      let user = await this.userService.getOrganiserById(+req.params.organiser_id);
+      let user = await this.userService.getOrganiserById(+req.user.id);
       if (!user && user === undefined) {
-        throw new Error("pas d'organisateur à l'ID: " + req.params.organiser_id)
+        throw new Error("pas d'organisateur à l'ID: " + req.user.id)
       } else {
         user = await this.userService.update(user.id, req.body);
         console.log("🚀 ~ UserController ~ update ~ user:", user)
@@ -128,10 +129,10 @@ export class UserController {
 
   async updateVolunteerPassword(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      let user = await this.userService.getVolunteerChangePassword(+req.params.volunteer_id);
+      let user = await this.userService.getVolunteerChangePassword(+req.user.id);
       console.log("🚀 ~ UserController ~ changePassword ~ user:", user)
       if (!user && user === undefined) {
-        throw new Error("pas d'organisateur à l'ID: " + req.params.volunteer_id)
+        throw new Error("pas d'organisateur à l'ID: " + req.user.id)
       } else {
         user = await this.userService.updatePassword(user.id, req.body);
         console.log("🚀 ~ UserController ~ update ~ user:", user)
@@ -148,10 +149,10 @@ export class UserController {
 
   async updateOrganiserPassword(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: User, message: string }> {
     try {
-      let user = await this.userService.getOrganiserChangePassword(+req.params.organiser_id);
+      let user = await this.userService.getOrganiserChangePassword(+req.user.id);
       console.log("🚀 ~ UserController ~ changePassword ~ user:", user)
       if (!user && user === undefined) {
-        throw new Error("pas d'organisateur à l'ID: " + req.params.organiser_id)
+        throw new Error("pas d'organisateur à l'ID: " + req.user.id)
       } else {
         user = await this.userService.updatePassword(user.id, req.body);
         console.log("🚀 ~ UserController ~ update ~ user:", user)
