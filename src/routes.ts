@@ -116,12 +116,6 @@ export const Routes = [
         action: "getEventById"
     },
     {
-        method: "get",
-        route: "/event/date/:date",
-        controller: EventController,
-        action: "getEventsByDate"
-    },
-    {
         method: "post",
         route: "/event",
         controller: EventController,
@@ -139,6 +133,29 @@ export const Routes = [
         controller: EventController,
         action: "deleteEvent"
     },
+    // utilisation ultérieure
+    // {
+    //     method: "get",
+    //     route: "/event/date/:date",
+    //     controller: EventController,
+    //     action: "getEventsByDate"
+    // },
+
+    // getAll volunteerAssingment : 
+    {
+        method: "get",
+        route: "/volunteerAssignment",
+        controller: VolunteerAssignmentController,
+        action : "getAllVolunteerAssignments"
+    },
+
+    {
+        method: "post",
+        route:"/createAssignment",
+        controller: VolunteerAssignmentController,
+        action :"createAssignment"
+
+    }
 
 
 

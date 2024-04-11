@@ -14,7 +14,7 @@ export class EventService {
   }
 
   async getEventById(id: number): Promise<Event | undefined> {
-    const byId :FindOneOptions<Event> = {where:{id}};
+    const byId :FindOneOptions<Event> = {where:{id}, relations: {eventTasks: true} };
     return await this.eventRepository.findOne(byId);
   }
   
@@ -29,12 +29,12 @@ export class EventService {
    
   }
 
-  // recherche par date 
+  // recherche par date, utilisation ultérieure
 
-  async getEventsByDate(date: Date): Promise<Event[]  | undefined> {
-   console.log("recherche: "+ date);
-    return await this.eventRepository.find({ where: { startOn: date } });
-  }
+  // async getEventsByDate(date: Date): Promise<Event[]  | undefined> {
+  //  console.log("recherche: "+ date);
+  //   return await this.eventRepository.find({ where: { startOn: date } });
+  // }
 
 
 

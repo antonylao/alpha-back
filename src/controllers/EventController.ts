@@ -58,24 +58,24 @@ async getEventByType(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-
-async getEventsByDate(req: Request, res: Response) {
-  let date: Date;
-  const dateParam = req.params.date;
+//utilisation ultérieure
+// async getEventsByDate(req: Request, res: Response) {
+//   let date: Date;
+//   const dateParam = req.params.date;
   
-  if (/^\d{4}$/.test(dateParam)) {
-    date = new Date(parseInt(dateParam), 0, 1);
-    console.log("format de dateparam: "+ dateParam)
-  } else {
-    date = new Date(dateParam);
-  }
-  try {
-    const events = await eventService.getEventsByDate(date);
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
+//   if (/^\d{4}$/.test(dateParam)) {
+//     date = new Date(parseInt(dateParam), 0, 1);
+//     console.log("format de dateparam: "+ dateParam)
+//   } else {
+//     date = new Date(dateParam);
+//   }
+//   try {
+//     const events = await eventService.getEventsByDate(date);
+//     res.json(events);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// }
 
    async createEvent(req: Request, res: Response) {
     try {

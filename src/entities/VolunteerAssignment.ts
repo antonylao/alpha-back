@@ -5,11 +5,13 @@ import { Task } from "./Task";
 import { EventTask } from "./EventTask";
 
 export enum Status {
-  PENDING = "pending",
-  ACCEPTED = "accepted",
-  REFUSED = "refused",
-  CANCELED = "canceled"
+  PENDING = 1,
+  ACCEPTED = 2,
+  REFUSED = 3,
+  CANCELED = 4
 }
+
+// 1 pending, 2 accepted, 3 refused, 4 cancelled
 
 @Entity()
 // @Unique(["task", "event"])
@@ -38,10 +40,7 @@ export class VolunteerAssignment {
     { name: "eventTaskTaskId", referencedColumnName: "task" },
   ])
   eventTask: EventTask;
-  // @ManyToOne(() => Task, (task) => task.volunteer_assignments, { nullable: false, onDelete: 'CASCADE' })
-  // task: Task;
-  // @ManyToOne(() => Event, (event) => event.volunteer_assignments, { nullable: false, onDelete: 'CASCADE' })
-  // event: Event;
+  
 
   @CreateDateColumn()
   createdAt: Date

@@ -3,6 +3,8 @@ import { VolunteerAssignmentService } from "../services/VolunteerAssignmentServi
 import { VolunteerAssignment } from "../entities/VolunteerAssignment";
 
 
+const volunteerAssignmentService = new VolunteerAssignmentService();
+
 export class VolunteerAssignmentController {
   private volunteerAssignmentService = new VolunteerAssignmentService()
   async readPastEventsInfoForOrganiserVolunteerCard(req: Request, res: Response, next: NextFunction) {
@@ -43,4 +45,33 @@ export class VolunteerAssignmentController {
       res.send(err.message)
     }
   }
+
+  async getAllVolunteerAssignments (req: Request, res: Response) {
+    try {
+      const volunteerAssignments = await volunteerAssignmentService.getAllVolunteerAssignments();
+      if(!volunteerAssignments){
+        console.log("tableau vide")
+      }
+      console.log("il devrait y avoir des valeurs " + volunteerAssignments)
+      res.json(volunteerAssignments);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+}
+
+async createAssignment(req: Request, res: Response) {
+
+  const userId =1;
+  const eventId = 1;
+  const taskId = 1
+
+ return await this.volunteerAssignmentService.createVolunteerAssignment(1, 1,1 )
+  // try {
+  //   const newEvent = await eventService.createEvent(req.body);
+  //   res.status(201).json(newEvent);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
+  
+}
 }

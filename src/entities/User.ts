@@ -4,8 +4,8 @@ import { VolunteerAssignment } from "./VolunteerAssignment";
 
 
 export enum Role {
-  ADMIN = "admin",
-  VOLUNTEER = "volunteer"
+  ADMIN = 1,
+  VOLUNTEER = 2
 }
 
 @Entity()

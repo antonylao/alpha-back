@@ -4,11 +4,12 @@ import { Task } from "./Task";
 import { VolunteerAssignment } from "./VolunteerAssignment";
 
 export enum Progression {
-  NOT_STARTED = "not_started",
-  IN_PROGRESS = "in_progress",
-  AWAITING_CONFIRMATION = "awaiting_confirmation",
-  COMPLETED = "completed"
+  NOT_STARTED = 1,
+  IN_PROGRESS = 2,
+  AWAITING_CONFIRMATION = 3,
+  COMPLETED = 4
 }
+// 1 not started, 2 in progress, 3 awaiting confirmation, 4 completed
 
 @Entity()
 //la ligne en dessous ne sert à rien, mais je le garde pour la clarté
