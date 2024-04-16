@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 import { EventService } from "../services/EventService";
 import { EventType } from "../entities/Event";
+import { upload } from "../multerConfig";
 
 const eventService = new EventService();
 
 export class EventController {
+    static createEvent(req: Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) {
+        throw new Error("Method not implemented.");
+    }
   eventService: any;
    async getAllEvents(req: Request, res: Response) {
     try {
@@ -77,14 +81,35 @@ async getEventByType(req: Request, res: Response) {
 //   }
 // }
 
-   async createEvent(req: Request, res: Response) {
-    try {
-      const newEvent = await eventService.createEvent(req.body);
-      res.status(201).json(newEvent);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
+  //  async createEvent(req: Request, res: Response) {
+  //   try {
+  //     const newEvent = await eventService.createEvent(req.body);
+  //     res.status(201).json(newEvent);
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // }
+
+  async createEvent(req: Request, res: Response) {
+    upload.single("picture")(req, res, async (err: any) => {
+      if (err) {
+          res.status(500).json({ message: err.message });
+      } else {
+          try {
+              const eventData = req.body;
+              if (req.file) {
+                  eventData.picture = req.file.filename;
+              }
+              const newEvent = await eventService.createEvent(eventData);
+              res.status(201).json(newEvent);
+          } catch (error) {
+              res.status(500).json({ message: error.message });
+          }
+      }
+  });
+}
+  
+  
 
    async updateEvent(req: Request, res: Response) {
     const id = parseInt(req.params.id);
@@ -92,6 +117,7 @@ async getEventByType(req: Request, res: Response) {
       const updatedEvent = await eventService.updateEvent(id, req.body);
       if (updatedEvent) {
         res.json(updatedEvent);
+        console.log(updatedEvent)
       } else {
         res.status(404).json({ message: "Event not found" });
       }

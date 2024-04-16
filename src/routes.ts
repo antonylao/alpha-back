@@ -1,7 +1,12 @@
 import { UserController } from "./controllers/UserController";
 import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
-import { EventController } from '../src/controllers/EventController'
+import { EventController } from '../src/controllers/EventController';
+import { upload } from './multerConfig';
+
+
+
+
 
 export const Routes = [
     // {
@@ -115,6 +120,7 @@ export const Routes = [
         controller: EventController,
         action: "getEventById"
     },
+
     {
         method: "post",
         route: "/event",
