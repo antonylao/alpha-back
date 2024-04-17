@@ -3,6 +3,7 @@ import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
 import { EventController } from '../src/controllers/EventController';
 import { upload } from './multerConfig';
+import { TaskController } from "./controllers/TaskController";
 
 
 
@@ -161,8 +162,15 @@ export const Routes = [
         controller: VolunteerAssignmentController,
         action :"createAssignment"
 
-    }
+    },
+    // afficher les tasks
 
+    {
+        method: "get",
+        route: "/task",
+        controller: TaskController,
+        action : "getAllTasks"
+    },
 
 
 
