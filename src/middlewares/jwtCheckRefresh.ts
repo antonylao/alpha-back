@@ -14,9 +14,7 @@ export async function jwtCheckRefresh(req: Request, res: Response, next: NextFun
       throw new AppError(HttpCode.UNAUTHORIZED, "no token")
     }
 
-    console.log("ca passe avant")
     const payload = await jwt.verify(token, process.env.REFRESH_SECRET_KEY)
-    console.log("ca passe apres")
 
     //initialization user id
     const id = payload.id

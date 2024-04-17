@@ -43,7 +43,7 @@ export class VolunteerAssignmentController {
   }
 
 
-  async readPastEventsInfoForOrganiserVolunteerCard(req: Request, res: Response, next: NextFunction) {
+  async readPastEventsInfoForOrganiserVolunteerCard(req: Request, res: Response, next: NextFunction): Promise<{ status: HttpCode, datas?: VolunteerAssignment[] }> {
     try {
       return {
         status: HttpCode.OK,
@@ -54,8 +54,7 @@ export class VolunteerAssignmentController {
     }
   }
 
-
-  async readAllComments(req: Request, res: Response, next: Function): Promise<{ comments?: VolunteerAssignment[], message: string }> {
+  async readAllComments(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const comments = await this.volunteerAssignmentService.getAllComments()
 
@@ -63,14 +62,18 @@ export class VolunteerAssignmentController {
         throw new Error("il n'y a pas encore de commentaires")
       } else {
         console.log("🚀 ~ VolunteerAssignmentController ~ readAllComments ~ comments:", comments)
-        return { comments, message: "On à retrouvé les commentaires!" };
+        return {
+          status: HttpCode.OK,
+          datas: comments,
+          message: "On à retrouvé les commentaires!"
+        }
       }
     } catch (err) {
       res.send(err.message)
     }
   }
 
-  async readAllPendingRequests(req: Request, res: Response, next: Function): Promise<{ pendingRequest?: VolunteerAssignment[], message: string }> {
+  async readAllPendingRequests(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const pendingRequest = await this.volunteerAssignmentService.getAllPendingRequests()
 
@@ -78,7 +81,11 @@ export class VolunteerAssignmentController {
         throw new Error("il n'y a pas encore de commentaires")
       } else {
         console.log("🚀 ~ VolunteerAssignmentController ~ readAllPendingRequests ~ pendingRequest:", pendingRequest)
-        return { pendingRequest, message: "On à retrouvé les requêtes en cours!" };
+        return {
+          status: HttpCode.OK,
+          datas: pendingRequest,
+          message: "On à retrouvé les requêtes en cours!"
+        }
       }
     } catch (err) {
       res.send(err.message)

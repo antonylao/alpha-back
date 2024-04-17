@@ -91,6 +91,7 @@ export class VolunteerAssignmentService {
             room: {
               name: true
             },
+            id: true,
             title: true,
             type: true,
             startOn: true
@@ -129,7 +130,8 @@ export class VolunteerAssignmentService {
             },
             title: true,
             type: true,
-            startOn: true
+            startOn: true,
+            id: true
           },
           task: {
             name: true,
@@ -141,7 +143,7 @@ export class VolunteerAssignmentService {
         }
       },
       where: {
-        status: Status.PENDING
+        status: Status.PENDING,
       },
     })
     console.log("🚀 ~ VolunteerAssignmentService ~ getAllPendingRequests ~ pendingRequest:", pendingRequest)

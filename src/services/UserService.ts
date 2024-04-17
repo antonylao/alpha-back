@@ -1,7 +1,5 @@
-import { Not } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Role, User } from "../entities/User";
-import { VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { AppError, HttpCode } from "../utils/AppError";
 
 export class UserService {
@@ -111,6 +109,8 @@ export class UserService {
       throw error
     }
   }
+
+
 
 
   async update(id: number, user: Partial<User>): Promise<User> {

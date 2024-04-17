@@ -45,7 +45,6 @@ AppDataSource.initialize()
             //     res.send(result)
             // })
 
-            //error handling
             app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
                 if (res.headersSent) {
                     return next(err)

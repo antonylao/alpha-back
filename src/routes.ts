@@ -39,6 +39,7 @@ export const Routes = [
         action: "loginOrganiser"
     },
     {
+    { // ** refreshToken
         method: "post",
         route: "/auth/refreshToken",
         controller: AuthController,
@@ -55,10 +56,21 @@ export const Routes = [
         route: "/auth/signin/:userId/emailConfirmation",
         controller: AuthController,
         action: "emailConfirmation"
+    { // ** registerVolunteer
+        method: "post",
+        route: "/auth/signup/volunteer",
+        controller: AuthController,
+        action: "registerVolunteer"
+    },
+    { // ** loginVolunteer
+        method: "post",
+        route: "/auth/signin/volunteer",
+        controller: AuthController,
+        action: "loginVolunteer"
     },
 
     //*VOLUNTEER
-    {
+    { // ** readAllVolunteersForOrganiserVolunteerIndex
         method: "get",
         route: "/api/organiserCheck/volunteer",
         controller: UserController,
@@ -66,25 +78,25 @@ export const Routes = [
     },
     { // ** readVolunteer
         method: "get", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer_profile", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readVolunteer" // nom de la fonction dans le fichier
     },
     { // ** updateVolunteer
         method: "put", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer_profile", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateVolunteer" // nom de la fonction dans le fichier
     },
     { // ** readVolunteerPassword
         method: "get", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readVolunteerPassword" // nom de la fonction dans le fichier
     },
     { // ** updateVolunteerPassword
         method: "put", // get, post, patch, put, delete
-        route: "/volunteer/:volunteer_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/volunteer/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateVolunteerPassword" // nom de la fonction dans le fichier
     },
@@ -105,13 +117,13 @@ export const Routes = [
     //*VOLUNTEER ASSIGNMENTS
     {
         method: "get",
-        route: "/volunteer/:volunteerId/past_events",
+        route: "/api/volunteer/:volunteerId/past_events",
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readPastEventsInfoForOrganiserVolunteerCard" // nom de la fonction dans le fichier
     },
     { // ** readAllComments
         method: "get", // get, post, patch, put, delete
-        route: "/organiser/comments", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser/comments", // chemin / url apres localhost => localhost:3000/
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readAllComments" // nom de la fonction dans le fichier
     },
@@ -155,36 +167,37 @@ export const Routes = [
     },
 
 
+
     //*ORGANISER
     { // ** readOrganiser
         method: "get", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readOrganiser" // nom de la fonction dans le fichier
     },
     { // ** updateOrganiser
         method: "put", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateOrganiser" // nom de la fonction dans le fichier
     },
     { // ** readOrganiserPassword
         method: "get", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "readOrganiserPassword" // nom de la fonction dans le fichier
     },
     { // ** updateOrganiserPassword
         method: "put", // get, post, patch, put, delete
-        route: "/organiser/:organiser_id/change_password", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser/change_password", // chemin / url apres localhost => localhost:3000/
         controller: UserController, // nom du fichier
         action: "updateOrganiserPassword" // nom de la fonction dans le fichier
     },
 
     //* EVENT
-    {
+    { // ** getAllEvents
         method: "get",
-        route: "/event",
+        route: "/api/event",
         controller: EventController,
         action: "getAllEvents"
     },
@@ -194,8 +207,56 @@ export const Routes = [
         route: "/api/event/upcoming",
         controller: EventController,
         action: "getAllUpcomingEvents"
+    { // ** getEventById
+        method: "get",
+        route: "/api/event/:id",
+        controller: EventController,
+        action: "getEventById"
+    },
+    { // ** createEvent
+        method: "post",
+        route: "/api/event",
+        controller: EventController,
+        action: "createEvent"
+    },
+    { // ** updateEvent
+        method: "put",
+        route: "/api/event/:event_id",
+        controller: EventController,
+        action: "updateEvent"
+    },
+    { // ** deleteEvent
+        method: "delete",
+        route: "/api/event/:event_id",
+        controller: EventController,
+        action: "deleteEvent"
+    },
+    { // ** readCommentsByEventId
+        method: "get",
+        route: "/api/event/:event_id/comments",
+        controller: EventController,
+        action: "readCommentsByEventId"
+    },
+    { // ** readRatingsByEventId
+        method: "get",
+        route: "/api/event/:event_id/ratings",
+        controller: EventController,
+        action: "readRatingsByEventId"
+    },
+    { // ** updateRatingsByEventId
+        method: "put",
+        route: "/api/event/:event_id/task/:task_id/user/:user_id/rating",
+        controller: EventController,
+        action: "updateRatingsByEventId"
+    },
+    { // ** updateStatusByEventId
+        method: "put",
+        route: "/api/event/:event_id/task/:task_id/user/:user_id/status",
+        controller: EventController,
+        action: "updateStatusByEventId"
     },
 
+    // ** EventTask
 
     //*EVENT_TASK
     {
@@ -203,5 +264,28 @@ export const Routes = [
         route: "/event/upcoming/:eventId/task",
         controller: EventTaskController,
         action: "getUpcomingEventInfosForTaskApply"
+    { // ** readEventTaskById
+        method: "get",
+        route: "/api/event/:event_id/task/:task_id",
+        controller: EventTaskController,
+        action: "readEventTaskById"
+    },
+    { // ** updateEventTaskProgressionById
+        method: "put",
+        route: "/api/event/:event_id/task/:task_id/progression",
+        controller: EventTaskController,
+        action: "updateEventTaskProgressionById"
+    },
+    { // ** updateEventTaskRequiredVolunteersById
+        method: "put",
+        route: "/api/event/:event_id/task/:task_id/required_volunteers",
+        controller: EventTaskController,
+        action: "updateEventTaskRequiredVolunteersById"
+    },
+    { // ** deleteEventTaskById
+        method: "delete",
+        route: "/api/event/:event_id/task/:task_id",
+        controller: EventTaskController,
+        action: "deleteEventTaskById"
     },
 ]

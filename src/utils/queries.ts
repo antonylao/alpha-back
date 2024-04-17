@@ -12,39 +12,59 @@ export class VolunteerAssignmentQueries {
 
   static allPrimaryFields = "\
   SELECT va.*  \
+   AND va.userId = ?; \
+  "
+
+  static ratingsForEvent = "\
+  SELECT va.userId, et.taskId, et.eventId, va.organiserRating, e.title AS eventTitle, e.startOn, e.duration, e.picture, e.type, r.name, t.name AS taskName  \
   FROM volunteer_assignment AS va \
   LEFT JOIN event_task AS et ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
   LEFT JOIN event AS e ON e.id = et.eventId \
   LEFT JOIN task AS t ON t.id = et.taskId \
-  WHERE va.userId = ? AND et.eventId = ? AND et.taskId = ? \
-  ;"
+  WHERE va.userId = ? AND et.eventId = ? AND et.taskId = ?\
+  ; "
 
   static associatedEventDateAndDuration = "\
   SELECT va.id, va.userId, et.eventId, et.taskId, e.startOn, e.duration, va.organiserRating  \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ?; \
+  "
+  static commentsForEvent = "\
+  SELECT va.userId, et.taskId, et.eventId, va.volunteerComment, e.title AS eventTitle, e.startOn, e.duration, e.picture, e.type, r.name, t.name AS taskName  \
   FROM volunteer_assignment AS va \
   LEFT JOIN event_task AS et ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
   LEFT JOIN event AS e ON e.id = et.eventId \
   LEFT JOIN task AS t ON t.id = et.taskId \
-  WHERE va.userId = ? AND et.eventId = ? AND et.taskId = ? \
-  ;"
+  WHERE va.userId = ? AND et.eventId = ? AND et.taskId = ?\
+  ; "
 
-  //!remove select status
+
   //status 2 = accepted
   static finishedAssignmentsInfo = "\
   SELECT va.id, va.userId, va.status, et.eventId, et.taskId, e.title, e.description, e.startOn, e.duration, e.type, e.picture, t.name as taskName, va.volunteerComment, r.name AS roomName  \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ?; \
+  "
+  static updateRatingsForEvent = "\
+  SELECT va.userId, et.taskId, et.eventId, va.organiserRating, e.title AS eventTitle, e.startOn, e.duration, e.picture, e.type, r.name, t.name AS taskName  \
   FROM volunteer_assignment AS va \
   LEFT JOIN event_task AS et ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
   LEFT JOIN event AS e ON e.id = et.eventId \
   LEFT JOIN task AS t ON t.id = et.taskId \
   LEFT JOIN room AS r ON e.roomId = r.id \
-  WHERE ADDTIME(e.startOn, e.duration) < NOW() \
-  AND va.status = ? \
-  AND va.userId = ? \
-  ;"
+  WHERE ADDTIME(e.startOn, e.duration) <NOW() \
+  AND va.status = ?\
+  AND va.userId = ?\
+; "
   // WHERE ADDTIME(e.startOn, e.duration) < NOW() \
 
   static finishedAssignmentsInfo2 = "\
   SELECT va.id, va.userId, va.status, et.eventId, et.taskId, e.title, e.description, e.startOn, e.duration, e.type, e.picture, t.name as taskName, va.volunteerComment, r.name AS roomName  \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ? AND userId = ?; \
+"
+  static updateStatusForEvent = "\
+  SELECT va.userId, et.taskId, et.eventId, va.status, e.title AS eventTitle, e.startOn, e.duration, e.picture, e.type, r.name, t.name AS taskName  \
   FROM volunteer_assignment AS va \
   LEFT JOIN event_task AS et ON et.taskId = va.eventTaskTaskId AND et.eventId = va.eventTaskEventId \
   LEFT JOIN event AS e ON e.id = et.eventId \
@@ -54,6 +74,7 @@ export class VolunteerAssignmentQueries {
   AND va.status = \'2\' \
   AND va.userId = ? \
   ;"
+
 
   static assignmentForCommentUpdate = "\
   SELECT va.id, e.startOn, e.duration, va.status, va.volunteerComment \
@@ -104,4 +125,28 @@ export class EventTaskQueries {
   WHERE et.eventId = ?  \
   ;"
 
+  static taskFromEvent = "\
+  SELECT et.taskId, et.eventId, e.title AS eventTitle, e.description AS eventDescription, e.startOn, e.duration, e.picture, r.name, t.name AS taskName, et.progression, et.nbVolunteersRequired \
+  FROM event_task AS et \
+  LEFT JOIN event AS e ON e.id = et.eventId \
+  LEFT JOIN task AS t ON t.id = et.taskId \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ?  ; \
+  "
+  static taskProgressionFromEvent = "\
+  SELECT et.taskId, et.eventId, e.title AS eventTitle, e.description AS eventDescription, e.startOn, e.duration, e.picture, r.name, t.name AS taskName, et.progression \
+  FROM event_task AS et \
+  LEFT JOIN event AS e ON e.id = et.eventId \
+  LEFT JOIN task AS t ON t.id = et.taskId \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ?  ; \
+  "
+  static taskRequiredVolunteersFromEvent = "\
+  SELECT et.taskId, et.eventId, e.title AS eventTitle, e.description AS eventDescription, e.startOn, e.duration, e.picture, r.name, t.name AS taskName, et.nbVolunteersRequired \
+  FROM event_task AS et \
+  LEFT JOIN event AS e ON e.id = et.eventId \
+  LEFT JOIN task AS t ON t.id = et.taskId \
+  LEFT JOIN room AS r ON r.id = e.roomId\
+  WHERE eventId = ? ANd taskId = ?  ; \
+  "
 }
