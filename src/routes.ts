@@ -12,7 +12,7 @@ export const Routes = [
     //     controller: , // nom du fichier
     //     action: "" // nom de la fonction dans le fichier
     // },
-    
+
     //*AUTH
     { // ** refreshToken
         method: "post",
@@ -36,7 +36,7 @@ export const Routes = [
     //*VOLUNTEER
     { // ** readAllVolunteersForOrganiserVolunteerIndex
         method: "get",
-        route: "/volunteer",
+        route: "/api/organiserCheck/volunteer",
         controller: UserController,
         action: "readAllVolunteersForOrganiserVolunteerIndex"
     },
@@ -68,13 +68,13 @@ export const Routes = [
     //*VOLUNTEER ASSIGNMENTS
     {
         method: "get",
-        route: "/volunteer/:volunteerId/past_events",
+        route: "/api/volunteer/:volunteerId/past_events",
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readPastEventsInfoForOrganiserVolunteerCard" // nom de la fonction dans le fichier
     },
     { // ** readAllComments
         method: "get", // get, post, patch, put, delete
-        route: "/organiser/comments", // chemin / url apres localhost => localhost:3000/
+        route: "/api/organiser/comments", // chemin / url apres localhost => localhost:3000/
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readAllComments" // nom de la fonction dans le fichier
     },
@@ -115,55 +115,55 @@ export const Routes = [
     //* EVENT
     { // ** getAllEvents
         method: "get",
-        route: "/event",
+        route: "/api/event",
         controller: EventController,
         action: "getAllEvents"
     },
     { // ** getEventById
         method: "get",
-        route: "/event/:id",
+        route: "/api/event/:id",
         controller: EventController,
         action: "getEventById"
     },
     { // ** createEvent
         method: "post",
-        route: "/event",
+        route: "/api/event",
         controller: EventController,
         action: "createEvent"
     },
     { // ** updateEvent
         method: "put",
-        route: "/event/:event_id",
+        route: "/api/event/:event_id",
         controller: EventController,
         action: "updateEvent"
     },
     { // ** deleteEvent
         method: "delete",
-        route: "/event/:event_id",
+        route: "/api/event/:event_id",
         controller: EventController,
         action: "deleteEvent"
     },
     { // ** readCommentsByEventId
         method: "get",
-        route: "/event/:event_id/comments",
+        route: "/api/event/:event_id/comments",
         controller: EventController,
         action: "readCommentsByEventId"
     },
     { // ** readRatingsByEventId
         method: "get",
-        route: "/event/:event_id/ratings",
+        route: "/api/event/:event_id/ratings",
         controller: EventController,
         action: "readRatingsByEventId"
     },
     { // ** updateRatingsByEventId
         method: "put",
-        route: "/event/:event_id/task/:task_id/user/:user_id/rating",
+        route: "/api/event/:event_id/task/:task_id/user/:user_id/rating",
         controller: EventController,
         action: "updateRatingsByEventId"
     },
     { // ** updateStatusByEventId
         method: "put",
-        route: "/event/:event_id/task/:task_id/user/:user_id/status",
+        route: "/api/event/:event_id/task/:task_id/user/:user_id/status",
         controller: EventController,
         action: "updateStatusByEventId"
     },
@@ -172,25 +172,25 @@ export const Routes = [
 
     { // ** readEventTaskById
         method: "get",
-        route: "/event/:event_id/task/:task_id",
+        route: "/api/event/:event_id/task/:task_id",
         controller: EventTaskController,
         action: "readEventTaskById"
     },
     { // ** updateEventTaskProgressionById
         method: "put",
-        route: "/event/:event_id/task/:task_id/progression",
+        route: "/api/event/:event_id/task/:task_id/progression",
         controller: EventTaskController,
         action: "updateEventTaskProgressionById"
     },
     { // ** updateEventTaskRequiredVolunteersById
         method: "put",
-        route: "/event/:event_id/task/:task_id/required_volunteers",
+        route: "/api/event/:event_id/task/:task_id/required_volunteers",
         controller: EventTaskController,
         action: "updateEventTaskRequiredVolunteersById"
     },
     { // ** deleteEventTaskById
         method: "delete",
-        route: "/event/:event_id/task/:task_id",
+        route: "/api/event/:event_id/task/:task_id",
         controller: EventTaskController,
         action: "deleteEventTaskById"
     },
