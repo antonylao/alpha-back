@@ -9,6 +9,8 @@ import { jwtCheck } from "./middlewares/jwtCheck";
 import { jwtCheckRefresh } from "./middlewares/jwtCheckRefresh";
 import { organiserCheck, volunteerCheck } from "./middlewares/userCheck";
 import cors from "cors";
+//keep it for dev
+import { transformRoutesForFront } from "./utils/MetaUtils";
 
 dotenv.config()
 
@@ -22,9 +24,14 @@ app.use("/api", jwtCheck)
 app.use("/api/organiserCheck", organiserCheck)
 app.use("/api/volunteerCheck", volunteerCheck)
 
+//to get route obj for front app
+console.log(transformRoutesForFront({ beginningSlash: false }))
+
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
+
+
 
         app.use(bodyParser.json())
         Routes.forEach(route => {
