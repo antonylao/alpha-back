@@ -43,14 +43,32 @@ export class EventService {
     return await this.eventRepository.save(newEvent);
   }
 
+  // async updateEvent(id: number, eventData: Partial<Event>): Promise<Event | undefined> {
+  //   const event = await this.getEventById(id);
+  //   if (event) {
+  //     await this.eventRepository.update(id, eventData);
+  //     return await this.getEventById(id);
+  //   }
+  //   return undefined;
+  // }
+
   async updateEvent(id: number, eventData: Partial<Event>): Promise<Event | undefined> {
+    console.log("ID de l'événement à mettre à jour dans le service : ", id);
+    console.log("Données reçues dans le service : ", eventData);
     const event = await this.getEventById(id);
     if (event) {
-      await this.eventRepository.update(id, eventData);
-      return await this.getEventById(id);
+      console.log("Evénement trouvé dans la base de données : ", event);
+        Object.assign(event, eventData);
+        
+        console.log("Evénement mis à jour : ", event);
+        await this.eventRepository.save(event);
+        console.log("ok dans la bdd");
+        console.log(eventData);
+        return event;
     }
     return undefined;
-  }
+}
+
 
   async deleteEvent(id: number): Promise<boolean> {
     const event = await this.getEventById(id);

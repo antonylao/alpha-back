@@ -94,6 +94,7 @@ async getEventByType(req: Request, res: Response) {
     upload.single("picture")(req, res, async (err: any) => {
       if (err) {
           res.status(500).json({ message: err.message });
+          console.log("message: " + err)
       } else {
           try {
               const eventData = req.body;
@@ -104,6 +105,7 @@ async getEventByType(req: Request, res: Response) {
               res.status(201).json(newEvent);
           } catch (error) {
               res.status(500).json({ message: error.message });
+              console.log("message: " + error)
           }
       }
   });
@@ -113,11 +115,15 @@ async getEventByType(req: Request, res: Response) {
 
    async updateEvent(req: Request, res: Response) {
     const id = parseInt(req.params.id);
+    console.log("ID de l'événement à mettre à jour : ", id);
+    console.log("Données reçues dans le corps de la requête : ", req.body);
     try {
       const updatedEvent = await eventService.updateEvent(id, req.body);
       if (updatedEvent) {
+        console.log("Evénement mis à jour avec succès : ", updatedEvent);
         res.json(updatedEvent);
-        console.log(updatedEvent)
+        console.log("update: " + updatedEvent)
+        
       } else {
         res.status(404).json({ message: "Event not found" });
       }
