@@ -7,10 +7,14 @@ import { AppDataSource } from "./data-source";
 import { AppError } from "./utils/AppError";
 import { jwtCheck } from "./middlewares/jwtCheck";
 import { jwtCheckRefresh } from "./middlewares/jwtCheckRefresh";
+import cors from "cors";
+
+dotenv.config()
 
 const app = express()
-dotenv.config()
-console.log('variable : ' + process.env.DB_PORT)
+app.use(cors());
+
+console.log('variable : '+ process.env.DB_PORT)
 
 app.use("/api", jwtCheck)
 app.use("/auth/refreshToken", jwtCheckRefresh)
