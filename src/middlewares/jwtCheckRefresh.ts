@@ -3,17 +3,20 @@ import jwt from 'jsonwebtoken'
 import { AppError, HttpCode } from "../utils/AppError";
 import { UserService } from "../services/UserService";
 import { User } from "../entities/User";
+import { AppDataSource } from "../data-source";
 
-export async function jwtCheck(req: Request, res: Response, next: NextFunction) {
+export async function jwtCheckRefresh(req: Request, res: Response, next: NextFunction) {
   try {
-
     const token = __extractTokenFromHeaders(req)
+    console.log("🚀 ~ jwtCheckRefresh ~ token:", token)
 
     if (!token) {
       throw new AppError(HttpCode.UNAUTHORIZED, "no token")
     }
 
-    const payload = await jwt.verify(token, process.env.SECRET_KEY)
+    console.log("ca passe avant")
+    const payload = await jwt.verify(token, process.env.REFRESH_SECRET_KEY)
+    console.log("ca passe apres")
 
     //initialization user id
     const id = payload.id
@@ -28,13 +31,12 @@ export async function jwtCheck(req: Request, res: Response, next: NextFunction) 
     } else {
       throw new AppError(HttpCode.NOT_FOUND, "l'utilisateur n'existe pas")
     }
-
-    if (token !== user.token) {
-      throw new AppError(HttpCode.FORBIDDEN, "le token en BDD ne correspond pas à celui envoyé")
+    if (token !== user.refreshToken) {
+      throw new AppError(HttpCode.FORBIDDEN, "le refreshToken en BDD ne correspond pas à celui envoyé")
     }
 
-
     req['user'] = payload
+
     next()
   } catch (error) {
     next(error)

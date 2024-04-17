@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { EventService } from "../services/EventService";
+import { EventType } from "../entities/Event";
+import { EnumUtils } from "../utils/EnumUtils";
 
 const eventService = new EventService();
 
@@ -15,11 +17,17 @@ export class EventController {
 
   async getAllUpcomingEvents(req: Request, res: Response, next: NextFunction) {
     try {
+      const datas = (await eventService.getAllUpcomingEvents()).map((obj) => {
+        return { ...obj, type: EnumUtils.getKey(EventType, obj.type) }
+      })
+
       return {
-        datas: await eventService.getAllUpcomingEvents(),
         status: 200,
+        datas
       }
     } catch (error) {
+
+
       next(error)
     }
   }

@@ -6,12 +6,22 @@ import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
 import { AppError } from "./utils/AppError";
 import { jwtCheck } from "./middlewares/jwtCheck";
+import { jwtCheckRefresh } from "./middlewares/jwtCheckRefresh";
+import { organiserCheck, volunteerCheck } from "./middlewares/userCheck";
+import cors from "cors";
+
+dotenv.config()
 
 const app = express()
-dotenv.config()
+app.use(cors());
+
 console.log('variable : ' + process.env.DB_PORT)
 
+app.use("/auth/refreshToken", jwtCheckRefresh)
 app.use("/api", jwtCheck)
+app.use("/api/organiserCheck", organiserCheck)
+app.use("/api/volunteerCheck", volunteerCheck)
+
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
@@ -19,6 +29,7 @@ AppDataSource.initialize()
         app.use(bodyParser.json())
         Routes.forEach(route => {
             (app as any)[route.method](route.route, (req: Request, res: Response, next: NextFunction) => {
+                console.log("route called: ", route)
                 const result = (new (route.controller as any))[route.action](req, res, next)
                 if (result instanceof Promise) {
                     result.then(

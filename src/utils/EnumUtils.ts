@@ -18,6 +18,10 @@ export class EnumUtils {
     return Object.keys(enumObj).includes(str)
   }
 
+  static getKey(enumObj, value) {
+    return Object.keys(enumObj).find(key => enumObj[key] === value);
+  }
+
   // static getEnumValue<T extends Record<string, T[string]>, TKey extends keyof T>(strKey: string, enumObj: T): T[TKey] {
   static getEnumValue<T extends object, TKey extends keyof T>(strKey: string, enumObj: T): T[TKey] {
     if (this.validKey(strKey, enumObj)) {

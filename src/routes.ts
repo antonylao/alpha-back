@@ -26,11 +26,41 @@ export const Routes = [
         controller: AuthController,
         action: "loginVolunteer"
     },
+    {    //PAS ACCESSIBLE EN PROD
+        method: "post",
+        route: "/auth/signup/organiser",
+        controller: AuthController,
+        action: "registerOrganiser"
+    },
+    {
+        method: "post",
+        route: "/auth/signin/organiser",
+        controller: AuthController,
+        action: "loginOrganiser"
+    },
+    {
+        method: "post",
+        route: "/auth/refreshToken",
+        controller: AuthController,
+        action: "refreshToken"
+    },
+    {
+        method: "patch",
+        route: "/api/auth/signout",
+        controller: AuthController,
+        action: "signout"
+    },
+    { //en vrai c'est un patch
+        method: "get",
+        route: "/auth/signin/:userId/emailConfirmation",
+        controller: AuthController,
+        action: "emailConfirmation"
+    },
 
     //*VOLUNTEER
     {
         method: "get",
-        route: "/volunteer",
+        route: "/api/organiserCheck/volunteer",
         controller: UserController,
         action: "readAllVolunteersForOrganiserVolunteerIndex"
     },
@@ -93,7 +123,7 @@ export const Routes = [
     },
     {
         method: "patch",
-        route: "/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
+        route: "/api/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
         controller: VolunteerAssignmentController,
         action: "updateRating"
     },
@@ -161,7 +191,7 @@ export const Routes = [
     //get upcoming events for the volunteer app
     {
         method: "get",
-        route: "/upcoming_event",
+        route: "/api/event/upcoming",
         controller: EventController,
         action: "getAllUpcomingEvents"
     },
@@ -170,7 +200,7 @@ export const Routes = [
     //*EVENT_TASK
     {
         method: "get",
-        route: "/upcoming_event/:eventId/task",
+        route: "/event/upcoming/:eventId/task",
         controller: EventTaskController,
         action: "getUpcomingEventInfosForTaskApply"
     },

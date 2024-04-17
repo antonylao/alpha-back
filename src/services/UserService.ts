@@ -7,8 +7,6 @@ import { AppError, HttpCode } from "../utils/AppError";
 export class UserService {
   private userRepository = AppDataSource.getRepository(User)
 
-
-  //*not tested
   async create(user: Partial<User>) {
     const newUser = this.userRepository.create(user)
     await this.userRepository.save(newUser)
@@ -65,7 +63,9 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          password: true
+          password: true,
+          token: true,
+          refreshToken: true
         }
       });
 
@@ -116,7 +116,7 @@ export class UserService {
   async update(id: number, user: Partial<User>): Promise<User> {
     await this.userRepository.update(id, user);
     console.log("🚀 ~ UserService ~ update ~ user:", user)
-    return this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async getVolunteerChangePassword(id: number): Promise<User> {

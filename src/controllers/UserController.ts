@@ -7,7 +7,10 @@ export class UserController {
   private userService = new UserService()
   async readAllVolunteersForOrganiserVolunteerIndex(req: Request, res: Response, next: NextFunction) {
     try {
-      return await this.userService.getAllVolunteers()
+      return {
+        status: HttpCode.OK,
+        datas: await this.userService.getAllVolunteers()
+      }
     } catch (error) {
       next(error)
     }
@@ -136,7 +139,11 @@ export class UserController {
       //modify obj
       user.warning = true
       //modify BDD
-      return await this.userService.update(id, user)
+      return {
+        status: HttpCode.OK,
+        datas: await this.userService.update(id, user)
+      }
+
     } catch (error) {
       next(error)
     }
@@ -149,7 +156,10 @@ export class UserController {
       //modify obj
       user.ban = true
       //modify BDD
-      return await this.userService.update(id, user)
+      return {
+        status: HttpCode.OK,
+        datas: await this.userService.update(id, user)
+      }
     } catch (error) {
       next(error)
     }

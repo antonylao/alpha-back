@@ -14,6 +14,8 @@ export class VolunteerAssignmentController {
   async createPendingVolunterAssignment(req: Request, res: Response, next: NextFunction) {
     try {
       const params = req.params
+      console.log(req.user);
+
       let paramsPartial: Omit<ReqParamIdsForCreation, "userId"> = {
         eventId: -1, taskId: -1
       };
@@ -43,7 +45,10 @@ export class VolunteerAssignmentController {
 
   async readPastEventsInfoForOrganiserVolunteerCard(req: Request, res: Response, next: NextFunction) {
     try {
-      return await this.volunteerAssignmentService.getPastEventsInfoForOrganiserVolunteerCard(+req.params.volunteerId)
+      return {
+        status: HttpCode.OK,
+        datas: await this.volunteerAssignmentService.getPastEventsInfoForOrganiserVolunteerCard(+req.params.volunteerId)
+      }
     } catch (error) {
       next(error)
     }
@@ -102,17 +107,6 @@ export class VolunteerAssignmentController {
     try {
 
       //initialisation vars
-      // const params = req.params
-      // let paramsInt: ReqParamIds = {
-      //   volunteerId: -1, eventId: -1, taskId: -1
-      // };
-
-      // Object.keys(params).forEach((idKey) => {
-      //   paramsInt[idKey] = parseInt(params[idKey], 10)
-      // })
-
-      // const newComment = req.body.comment
-
       const params = req.params
       let paramsPartial: Omit<ReqParamIds, "volunteerId"> = {
         eventId: -1, taskId: -1
@@ -194,7 +188,11 @@ export class VolunteerAssignmentController {
       }
 
       //modif BDD  //renvoie de la donnée: body: code 200
-      return await this.volunteerAssignmentService.update({ id: assignment.id, organiserRating: newRating })
+      return {
+        status: HttpCode.OK,
+        datas: await this.volunteerAssignmentService.update({ id: assignment.id, organiserRating: newRating })
+      }
+
     } catch (error) {
       next(error)
     }
