@@ -38,7 +38,6 @@ export const Routes = [
         controller: AuthController,
         action: "loginOrganiser"
     },
-    {
     { // ** refreshToken
         method: "post",
         route: "/auth/refreshToken",
@@ -56,6 +55,7 @@ export const Routes = [
         route: "/auth/signin/:userId/emailConfirmation",
         controller: AuthController,
         action: "emailConfirmation"
+    },
     { // ** registerVolunteer
         method: "post",
         route: "/auth/signup/volunteer",
@@ -207,6 +207,7 @@ export const Routes = [
         route: "/api/event/upcoming",
         controller: EventController,
         action: "getAllUpcomingEvents"
+    },
     { // ** getEventById
         method: "get",
         route: "/api/event/:id",
@@ -264,6 +265,7 @@ export const Routes = [
         route: "/event/upcoming/:eventId/task",
         controller: EventTaskController,
         action: "getUpcomingEventInfosForTaskApply"
+    },
     { // ** readEventTaskById
         method: "get",
         route: "/api/event/:event_id/task/:task_id",
