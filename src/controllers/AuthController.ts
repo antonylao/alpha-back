@@ -47,7 +47,6 @@ export class AuthController {
 
   async loginOrganiser(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("here")
       const user = await this.userService.getByEmail(req.body.email, Role.ADMIN)
       if (!user || user.active === false) {
         throw new AppError(HttpCode.UNAUTHORIZED, "Identifiants non valides")
