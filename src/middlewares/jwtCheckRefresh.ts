@@ -11,10 +11,11 @@ export async function jwtCheckRefresh(req: Request, res: Response, next: NextFun
     console.log("🚀 ~ jwtCheckRefresh ~ token:", token)
 
     if (!token) {
-      throw new AppError(HttpCode.UNAUTHORIZED, "no token")
+      throw new AppError(HttpCode.BAD_REQUEST, "no token")
     }
 
     const payload = await jwt.verify(token, process.env.REFRESH_SECRET_KEY)
+
 
     //initialization user id
     const id = payload.id
@@ -34,7 +35,7 @@ export async function jwtCheckRefresh(req: Request, res: Response, next: NextFun
     }
 
     req['user'] = payload
-
+    console.log("🚀 ~ jwtCheckRefresh ~ payload:", payload)
     next()
   } catch (error) {
     next(error)

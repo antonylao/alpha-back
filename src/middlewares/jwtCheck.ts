@@ -10,13 +10,14 @@ export async function jwtCheck(req: Request, res: Response, next: NextFunction) 
     const token = __extractTokenFromHeaders(req)
 
     if (!token) {
-      throw new AppError(HttpCode.UNAUTHORIZED, "no token")
+      throw new AppError(HttpCode.BAD_REQUEST, "no token")
     }
 
     const payload = await jwt.verify(token, process.env.SECRET_KEY)
 
     //initialization user id
     const id = payload.id
+    console.log("🚀 ~ jwtCheck ~ id:", id)
     //token en headers === token en BDD? non => 403
     const userService = new UserService()
     //get user
@@ -37,6 +38,7 @@ export async function jwtCheck(req: Request, res: Response, next: NextFunction) 
     req['user'] = payload
     next()
   } catch (error) {
+
     next(error)
   }
 

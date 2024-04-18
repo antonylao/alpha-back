@@ -4,7 +4,7 @@ import * as dotenv from "dotenv"
 import { Routes } from "./routes";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
-import { AppError } from "./utils/AppError";
+import { AppError, HttpCode } from "./utils/AppError";
 import { jwtCheck } from "./middlewares/jwtCheck";
 import { jwtCheckRefresh } from "./middlewares/jwtCheckRefresh";
 import { organiserCheck, volunteerCheck } from "./middlewares/userCheck";
@@ -31,8 +31,6 @@ AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
 
-
-
         app.use(bodyParser.json())
         Routes.forEach(route => {
             (app as any)[route.method](route.route, (req: Request, res: Response, next: NextFunction) => {
@@ -56,12 +54,20 @@ AppDataSource.initialize()
                 if (res.headersSent) {
                     return next(err)
                 }
+
                 if (err instanceof AppError) {
                     res.status(err.httpCode).send(err)
                     return
                 }
-                const message = err.message ? err.message : err
-                res.status(500).send({ message })
+
+                if (err.name === 'TokenExpiredError') {
+                    res.status(HttpCode.UNAUTHORIZED).send(err)
+                    return
+                }
+                //* not sure if this is still useful
+                // const message = err.message ? err.message : err
+                // res.status(500).send({ message })
+                res.status(500).send(err)
             })
         })
     }).catch((err) => {

@@ -39,7 +39,7 @@ export const Routes = [
         action: "loginOrganiser"
     },
     { // ** refreshToken
-        method: "post",
+        method: "get",
         route: "/auth/refreshToken",
         controller: AuthController,
         action: "refreshToken"
@@ -102,13 +102,13 @@ export const Routes = [
     },
     {
         method: "patch",
-        route: "/volunteer/:volunteerId/warning",
+        route: "/api/organiserCheck/volunteer/:volunteerId/warning",
         controller: UserController,
         action: "applyWarning"
     },
     {
         method: "patch",
-        route: "/volunteer/:volunteerId/ban",
+        route: "/api/organiserCheck/volunteer/:volunteerId/ban",
         controller: UserController,
         action: "applyBan"
     },
@@ -117,7 +117,7 @@ export const Routes = [
     //*VOLUNTEER ASSIGNMENTS
     {
         method: "get",
-        route: "/api/volunteer/:volunteerId/past_events",
+        route: "/api/organiserCheck/volunteer/:volunteerId/past_events",
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readPastEventsInfoForOrganiserVolunteerCard" // nom de la fonction dans le fichier
     },
@@ -135,33 +135,33 @@ export const Routes = [
     },
     {
         method: "patch",
-        route: "/api/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
+        route: "/api/organiserCheck/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
         controller: VolunteerAssignmentController,
         action: "updateRating"
     },
     {
         method: "get",
-        route: "/volunteer/:volunteerId/my_events",
+        route: "/api/volunteerCheck/volunteer/:volunteerId/my_events",
         controller: VolunteerAssignmentController,
         action: "getFinishedAssignmentsInfo"
     },
     {
         method: "patch",
-        route: "/api/event/:eventId/task/:taskId/comment",
+        route: "/api/volunteerCheck/event/:eventId/task/:taskId/comment",
         controller: VolunteerAssignmentController,
         action: "updateComment"
     },
 
     {
         method: "post",
-        route: "/api/event/:eventId/task/:taskId",
+        route: "/api/volunteerCheck/event/:eventId/task/:taskId",
         controller: VolunteerAssignmentController,
         action: "createPendingVolunterAssignment"
     },
 
     {
         method: "patch",
-        route: "/api/event/:eventId/task/:taskId/cancel",
+        route: "/api/volunteerCheck/event/:eventId/task/:taskId/cancel",
         controller: VolunteerAssignmentController,
         action: "cancelAssignment"
     },
@@ -204,7 +204,7 @@ export const Routes = [
     //get upcoming events for the volunteer app
     {
         method: "get",
-        route: "/api/event/upcoming",
+        route: "/api/volunteerCheck/event/upcoming",
         controller: EventController,
         action: "getAllUpcomingEvents"
     },
@@ -262,7 +262,7 @@ export const Routes = [
     //*EVENT_TASK
     {
         method: "get",
-        route: "/event/upcoming/:eventId/task",
+        route: "/api/volunteerCheck/event/upcoming/:eventId/task",
         controller: EventTaskController,
         action: "getUpcomingEventInfosForTaskApply"
     },
