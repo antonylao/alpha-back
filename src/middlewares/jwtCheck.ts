@@ -10,7 +10,7 @@ export async function jwtCheck(req: Request, res: Response, next: NextFunction) 
     const token = __extractTokenFromHeaders(req)
 
     if (!token) {
-      throw new AppError(HttpCode.BAD_REQUEST, "no token")
+      throw new AppError(HttpCode.UNAUTHORIZED, "no token")
     }
 
     const payload = await jwt.verify(token, process.env.SECRET_KEY)
