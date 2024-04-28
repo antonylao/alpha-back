@@ -10,6 +10,11 @@ export enum HttpCode {
   INTERNAL_SERVER_ERROR = 500,
 }
 
+export enum ErrorName {
+  JWT_TOKEN_EXPIRED = "TokenExpiredError",
+  DUPLICATE_ENTRY = "DuplicateEntryError"
+}
+
 export class AppError extends Error {
   httpCode: HttpCode;
   description: string;

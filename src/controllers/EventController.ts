@@ -28,17 +28,11 @@ export class EventController {
 
   async getAllUpcomingEvents(req: Request, res: Response, next: NextFunction) {
     try {
-      const datas = (await this.eventService.getAllUpcomingEvents()).map((obj) => {
-        return { ...obj, type: EnumUtils.getKey(EventType, obj.type) }
-      })
-
       return {
         status: 200,
-        datas
+        datas: await this.eventService.getAllUpcomingEvents()
       }
     } catch (error) {
-
-
       next(error)
     }
   }

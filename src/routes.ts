@@ -4,6 +4,7 @@ import { VolunteerAssignmentController } from "./controllers/VolunteerAssignment
 import { EventController } from '../src/controllers/EventController'
 import { EventTaskController } from "./controllers/EventTaskController";
 import { AuthController } from "./controllers/AuthController";
+import { TaskController } from "./controllers/TaskController";
 
 export const Routes = [
     // {
@@ -68,6 +69,17 @@ export const Routes = [
         controller: AuthController,
         action: "loginVolunteer"
     },
+
+    //*TASK
+
+    //   async getAllTasksNames(req: Request, res: Response, next: NextFunction) {
+    {
+        method: "get",
+        route: "/api/task",
+        controller: TaskController,
+        action: "getAllTasks"
+    },
+
 
     //*VOLUNTEER
     { // ** readAllVolunteersForOrganiserVolunteerIndex
@@ -141,7 +153,7 @@ export const Routes = [
     },
     {
         method: "get",
-        route: "/api/volunteerCheck/volunteer/:volunteerId/my_events",
+        route: "/api/volunteerCheck/volunteer/signedInId/my_events",
         controller: VolunteerAssignmentController,
         action: "getFinishedAssignmentsInfo"
     },
@@ -193,6 +205,7 @@ export const Routes = [
         controller: UserController, // nom du fichier
         action: "updateOrganiserPassword" // nom de la fonction dans le fichier
     },
+
 
     //* EVENT
     { // ** getAllEvents

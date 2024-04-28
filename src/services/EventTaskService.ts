@@ -13,7 +13,7 @@ export class EventTaskService {
   private eventRepository = AppDataSource.getRepository(Event);
   private taskRepository = AppDataSource.getRepository(Task);
 
-  async getUpcomingEventInfosForTaskApply(eventId: number) {
+  async getUpcomingEventInfosForTaskApply(eventId: number, volunteerId: number) {
     try {
       //trouver le volunteer_assignment_count_validated
       const queryData = await this.eventTaskRepository.query(
@@ -29,7 +29,27 @@ export class EventTaskService {
         }
       })
 
-      return queryData;
+      //CONDITIONS
+      //NB: j'ai besoin d'avoir tous les eventTasks avec les infos associées: 
+      // - le queryData renvoie au minimum une ligne avec l'eventTask, 
+      // - le queryData renvoie plusieurs lignes si il y a plusieurs volunteerAssignments associés à l'eventTask
+      //NB: j'ai besoin de n'avoir qu'une seule ligne associée à un eventTask donné dans mon retour, et celui associé au volunteerId s'il existe
+
+      const filteredQueryData = []
+      //sort queryData to have those associated with volunteerId first
+      queryData.sort((obj: any) => obj.userId === volunteerId ? -1 : 1)
+
+      queryData.forEach((objData: any) => {
+        //if eventId and taskId is not in any elt of return obj
+        if (filteredQueryData.every((objReturn) => {
+          return objReturn.eventId !== objData.eventId ||
+            objReturn.taskId !== objData.taskId
+        })) {
+          filteredQueryData.push(objData)
+        }
+      })
+
+      return filteredQueryData;
     } catch (error) {
       throw error
     }

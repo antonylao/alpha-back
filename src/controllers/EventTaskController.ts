@@ -10,6 +10,7 @@ export class EventTaskController {
 
   async getUpcomingEventInfosForTaskApply(req: Request, res: Response, next: NextFunction) {
     try {
+      const volunteerId = req.user.id
       const eventId = +req.params.eventId
 
       //get event data
@@ -25,9 +26,7 @@ export class EventTaskController {
       }
 
       //get event infos
-      const eventInfos = await this.eventTaskService.getUpcomingEventInfosForTaskApply(eventId)
-      console.log("🚀 ~ EventController ~ getUpcomingEventInfosForTaskApply ~ eventInfos:", eventInfos)
-
+      const eventInfos = await this.eventTaskService.getUpcomingEventInfosForTaskApply(eventId, volunteerId)
 
       //renvoi
       return {

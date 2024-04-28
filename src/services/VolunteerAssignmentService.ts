@@ -1,7 +1,7 @@
 import { AppDataSource } from "../data-source";
 import { VolunteerAssignmentQueries } from "../utils/queries";
 import { Role, User } from "../entities/User";
-import { AppError, HttpCode } from "../utils/AppError";
+import { AppError, ErrorName, HttpCode } from "../utils/AppError";
 import { Status, VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { UserService } from "./UserService";
 import { ReqParamIds, ReqParamIdsForCreation } from "../controllers/VolunteerAssignmentController";
@@ -15,6 +15,7 @@ export class VolunteerAssignmentService {
   private userService = new UserService();
   // private eventTaskService = new EventTaskService();
 
+  // either create an assignment, or update it if it already exists
   async createPendingVolunterAssignment(params: ReqParamIdsForCreation) {
     try {
       //find user en eventTask entities
@@ -39,9 +40,28 @@ export class VolunteerAssignmentService {
         .andWhere("va.userId = :userId", { userId: params.userId })
         .getOne()
 
+
       if (existingAssignment !== null && existingAssignment !== undefined) {
-        throw new AppError(HttpCode.BAD_REQUEST, `Il existe déjà une donnée dans la table volunteerAssignment avec l'association de clés primaires ${JSON.stringify(params)}`)
+        console.log("🚀 ~ VolunteerAssignmentService ~ createPendingVolunterAssignment ~ existingAssignment:", existingAssignment)
+
+        switch (existingAssignment.status) {
+          case Status.CANCELED:
+          case Status.REFUSED:
+            console.log("🚀 ~ VolunteerAssignmentService ~ createPendingVolunterAssignment ~ existingAssignment:", existingAssignment)
+            existingAssignment.status = Status.PENDING
+            return await this.update(existingAssignment)
+            break;
+          default:
+            const error = new AppError(HttpCode.BAD_REQUEST, `Il existe déjà une donnée dans la table volunteerAssignment avec l'association de clés primaires ${JSON.stringify(params)} dont le status n'est ni refusé, ni annulé`)
+            throw error
+            break;
+        }
+        //!change here
+        // const error = new AppError(HttpCode.BAD_REQUEST, `Il existe déjà une donnée dans la table volunteerAssignment avec l'association de clés primaires ${JSON.stringify(params)}`)
+        // throw error
       }
+
+
 
       //create body
       const body = { user, eventTask, status: Status.PENDING }

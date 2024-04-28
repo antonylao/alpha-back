@@ -11,6 +11,7 @@ import { organiserCheck, volunteerCheck } from "./middlewares/userCheck";
 import cors from "cors";
 //keep it for dev
 import { transformRoutesForFront } from "./utils/MetaUtils";
+import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config()
 
@@ -50,35 +51,19 @@ AppDataSource.initialize()
             //     res.send(result)
             // })
 
-            app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-                if (res.headersSent) {
-                    return next(err)
-                }
-
-                if (err instanceof AppError) {
-                    res.status(err.httpCode).send(err)
-                    return
-                }
-
-                if (err.name === 'TokenExpiredError') {
-                    res.status(HttpCode.UNAUTHORIZED).send(err)
-                    return
-                }
-                //* not sure if this is still useful
-                // const message = err.message ? err.message : err
-                // res.status(500).send({ message })
-                res.status(500).send(err)
-            })
+            app.use(errorHandler)
         })
     }).catch((err) => {
         console.error("Error during Data Source initialization", err)
     })
+
 
 // app.get("/test", (req: Request, res: Response, next: Function)=>{
 //     console.log("coucou");
 //     res.send("coucou tout le monde")
 // })
 
+// app.use(errorHandler)
 
 app.listen(process.env.PORT)
 console.log("express running on port :", process.env.PORT)

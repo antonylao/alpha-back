@@ -95,7 +95,8 @@ export class VolunteerAssignmentController {
   //:volunteerId
   async getFinishedAssignmentsInfo(req: Request, res: Response, next: Function) {
     try {
-      const volunteerId = +req.params.volunteerId
+      const volunteerId = req.user.id
+      console.log("🚀 ~ VolunteerAssignmentController ~ getFinishedAssignmentsInfo ~ volunteerId:", volunteerId)
       const finishedEvents = await this.volunteerAssignmentService.getFinishedAssignmentsInfo(volunteerId)
       console.log("🚀 ~ VolunteerAssignmentController ~ getFinishedAssignmentsInfo ~ finishedEvents:", finishedEvents)
 

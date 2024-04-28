@@ -14,8 +14,16 @@ export class EnumUtils {
   //   return Object.keys(enumObj).includes(str)
   // }
 
-  static isValidKey<T, K extends string>(str: string, enumObj: { [key in K]: T }): str is K {
-    return Object.keys(enumObj).includes(str)
+  // static isValidKey<T, K extends keyof T>(key: string, enumObj: { [key in K]: T }): key is K { //cannot infer because string cannot be inferred to key of T
+  //   const keyString = String(key)
+  //   return Object.keys(enumObj).includes(keyString)
+  // }
+
+  //infer to the string itself, not the keys of string, but validates at least: 
+  //NB: method can only be used if `key` is key of T
+  //use: isValidKey(str, enumObj)
+  static isValidKey<T, K extends string>(key: K, enumObj: { [key in K]: T }): key is K {
+    return Object.keys(enumObj).includes(key)
   }
 
   static getKey(enumObj, value) {

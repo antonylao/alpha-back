@@ -97,6 +97,13 @@ export class VolunteerAssignmentQueries {
 
 }
 
+/* 
+if event task has no data associated in volunteer_assignment, 
+userId, and all columns from volutneer_assignments, and countValidatedAssignments are NULL
+*/
+/*
+if all volunteer assignments data associated to event task are not of status accepted, countValidatedAssignments is NULL
+*/
 export class EventTaskQueries {
   static upcomingEventInfosForTaskApply = "\
   SELECT va.userId, et.taskId, et.eventId, \
@@ -114,7 +121,7 @@ export class EventTaskQueries {
       WHERE va.status = ? \
       GROUP BY et.taskId, et.eventId\
   ) AS sub ON sub.taskId = et.taskId AND sub.eventId = et.eventId \
-  WHERE et.eventId = ?  \
+  WHERE et.eventId = ? \
   ;"
 
   static upcomingEventInfosForTaskApplyV2 = "\
