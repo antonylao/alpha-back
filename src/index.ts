@@ -6,8 +6,12 @@ import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
 import { AppError } from "./utils/AppError";
 import cors from "cors";
+// import fileupload from "express-fileupload";
 
 const app = express()
+
+
+
 dotenv.config()
 console.log('variable : '+ process.env.DB_PORT)
 
@@ -15,9 +19,19 @@ AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
 
-        app.use(cors());
 
-        app.use(bodyParser.json())
+        app.use('/uploads', express.static('uploads'));
+        
+        app.use(cors());
+        app.use(express.json());
+        // https://github.com/mas-iota/nodejs-images-upload-boilerplate/blob/master/app.js
+        app.use(express.urlencoded({
+            limit:'15MB',
+            extended: false,
+            
+        }));
+
+        //app.use(bodyParser.json({limit:'15MB'}))
         Routes.forEach(route => {
             (app as any)[route.method](route.route, (req: Request, res: Response, next: NextFunction) => {
                 const result = (new (route.controller as any))[route.action](req, res, next)

@@ -13,8 +13,16 @@ export class TaskService {
     return await this.taskRepository.find();
   }
 
+  async getTaskByName(name: string): Promise<Task | undefined> {
+    const byName :FindOneOptions<Task> = {where:{name}  };
+    return await this.taskRepository.findOne(byName);
+  }
 
- 
+
+  async getTaskById(id: number): Promise<Task | undefined> {
+    const byId :FindOneOptions<Task> = {where:{id} };
+    return await this.taskRepository.findOne(byId);
+  }
   
 
 

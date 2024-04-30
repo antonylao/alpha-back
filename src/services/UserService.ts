@@ -5,7 +5,8 @@ import { VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { AppError, HttpCode } from "../utils/AppError";
 
 export class UserService {
-  private userRepository = AppDataSource.getRepository(User)
+   private userRepository = AppDataSource.getRepository(User)
+  
 
   async getVolunteerById(id: number): Promise<User> {
     try {

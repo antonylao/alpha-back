@@ -3,6 +3,7 @@ import { Event, EventType } from "../entities/Event";
 import { AppDataSource } from "../data-source";
 
 
+
 export class EventService {
  
 
@@ -39,6 +40,7 @@ export class EventService {
 
 
   async createEvent(eventData: Partial<Event>): Promise<Event> {
+    console.log('about to create event:', eventData)
     const newEvent = this.eventRepository.create(eventData);
     return await this.eventRepository.save(newEvent);
   }

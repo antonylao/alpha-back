@@ -4,6 +4,7 @@ import { VolunteerAssignmentController } from "./controllers/VolunteerAssignment
 import { EventController } from '../src/controllers/EventController';
 import { upload } from './multerConfig';
 import { TaskController } from "./controllers/TaskController";
+import { EventTaskController } from "./controllers/EventTaskController";
 
 
 
@@ -172,6 +173,13 @@ export const Routes = [
         action : "getAllTasks"
     },
 
+    //  créer un event task
 
+    {
+        method:"post",
+        route: "/event_task",
+        controller : EventTaskController,
+        action : "createEventTask"
+    },
 
 ]

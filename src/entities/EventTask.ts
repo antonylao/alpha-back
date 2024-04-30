@@ -26,10 +26,11 @@ export class EventTask {
 
 
 
-  @PrimaryColumn({ type: "integer", name: "eventId" })
+  @PrimaryColumn({ type: "integer", name: "eventId"})
   @ManyToOne(() => Event, (event) => event.eventTasks, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: "eventId" })
   event: Event;
+
   @PrimaryColumn({ type: "integer", name: "taskId" })
   @ManyToOne(() => Task, (task) => task.eventTasks, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: "taskId" })
