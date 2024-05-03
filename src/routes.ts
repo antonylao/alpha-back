@@ -5,6 +5,7 @@ import { EventController } from '../src/controllers/EventController';
 import { upload } from './multerConfig';
 import { TaskController } from "./controllers/TaskController";
 import { EventTaskController } from "./controllers/EventTaskController";
+import { RoomController } from "./controllers/RoomController";
 
 
 
@@ -180,6 +181,15 @@ export const Routes = [
         route: "/event_task",
         controller : EventTaskController,
         action : "createEventTask"
+    },
+
+    // afficher toute les rooms
+
+    {
+        method: "get",
+        route: "/room",
+        controller: RoomController,
+        action : "getAllRooms"
     },
 
 ]

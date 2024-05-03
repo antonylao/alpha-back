@@ -33,7 +33,10 @@ async function sendEmail(userEmail, role) {
     from: process.env.ADMIN_EMAIL,
     to: userEmail,
     subject: 'Nouvel événement créé',
-    text: mailContent
+    text: mailContent,
+    attachments: [{
+       filename: "Alpha.png", 
+       path: './src/templates/img/Alpha.png' }],
   };
 
   let info = await transporter.sendMail(mailOptions);
