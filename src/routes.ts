@@ -192,4 +192,12 @@ export const Routes = [
         action : "getAllRooms"
     },
 
+    {
+
+        method: "get",
+        route: "/room/:id",
+        controller: RoomController,
+        action : "getRoomById"
+    }
+
 ]

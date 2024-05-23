@@ -20,7 +20,22 @@ export class RoomController{
           res.status(500).json({ message: error.message });
         }
 
+       
+
+}
 
 
+async getRoomById(req: Request, res: Response) {
+  const id = parseInt(req.params.id);
+  try {
+    const room = await roomService.getRoomById(id);
+    if (room) {
+      res.json(room);
+    } else {
+      res.status(404).json({ message: "Room not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 }
 }

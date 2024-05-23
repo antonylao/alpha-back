@@ -121,19 +121,18 @@ export class EventController {
           if (req.file) {
             eventData.picture = req.file.filename;
           }
-          // const userRepository = getRepository(User);
+         
           const userRepository = AppDataSource.getRepository(User);
 
           
           const users = await userRepository.find();
-          // 
+         
           console.log('les users: '+ users)
          
           users.forEach(user => {
             sendEmail(user.email, user.role); 
           });
-          // console.log('email envoyé')
-          // console.log('eventData:', eventData)
+          
           const newEvent = await eventService.createEvent(eventData);
           const eventId = newEvent.id
 
@@ -141,7 +140,7 @@ export class EventController {
           
 
           if (eventTasksToCreate && eventTasksToCreate.length > 0){
-            //const formattedEventTasks: EventTask[] = eventTasksToCreate.map((eventTask)=> {
+           
               
               
             for (const eventTask of eventTasksToCreate){
@@ -158,21 +157,15 @@ export class EventController {
               console.log(formattedEventTask)
 
               const createOneEventTask = await eventTaskService.insertEventTask(formattedEventTask)
-              // const createdEventTasks = await eventTaskService.createManyEventTask(formattedEventTasks)
+             
               console.log('createOneEventTask: ', createOneEventTask)
             }
-           // })
+           
 
 
           }
           
-          // TODO
-          /**
-           * - recupere l'id des tasks
-           * -  
-           * 
-           * - 
-           */
+         
           
 
           res.status(201).json(newEvent);
@@ -188,21 +181,70 @@ export class EventController {
 
 
   async updateEvent(req: Request, res: Response) {
-    const id = parseInt(req.params.id);
-    console.log("ID de l'événement à mettre à jour : ", id);
-    console.log("Données reçues dans le corps de la requête : ", req.body);
-    try {
-      const updatedEvent = await eventService.updateEvent(id, req.body);
-      if (updatedEvent) {
-        console.log("Evénement mis à jour avec succès : ", updatedEvent);
-        res.json(updatedEvent);
-        console.log("update: " + updatedEvent);
-      } else {
-        res.status(404).json({ message: "Event not found" });
+
+   
+    const handleUpload = upload.single('picture');
+
+    handleUpload(req, res, async (err: any) => {
+      if (err) {
+        console.error("message on upload error: " + err);
+        return res.status(500).json({ message: err.message });
       }
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
+  
+      const id = parseInt(req.params.id);
+      console.log("ID de l'événement à mettre à jour : ", id);
+      console.log("Données reçues dans le corps de la requête : ", req.body);
+  
+      if (req.file) {
+        console.log("Fichier reçu : ", req.file);
+      }
+      if (req.files) {
+        console.log("Fichiers reçus : ", req.files);
+      }
+  
+      try {
+        const eventData = { ...req.body };
+        if (req.file) {
+          eventData.picture = req.file.filename;
+        }
+  
+       
+        const updatedEvent = await eventService.updateEvent(id, eventData);
+  
+        if (updatedEvent) {
+          
+          const eventTasksToUpdate = JSON.parse(eventData.selectedTasks || '[]');
+  
+          if (eventTasksToUpdate && eventTasksToUpdate.length > 0) {
+            for (const eventTask of eventTasksToUpdate) {
+              console.log('getting task by id:', eventTask.id);
+              const task = await taskService.getTaskById(eventTask.id);
+  
+              const formattedEventTask = {
+                nbVolunteersRequired: eventTask.quantity,
+                progression: Progression.NOT_STARTED,
+                event: updatedEvent,
+                task,
+              };
+  
+              console.log(formattedEventTask);
+  
+              const createOneEventTask = await eventTaskService.insertEventTask(formattedEventTask);
+  
+              console.log('createOneEventTask: ', createOneEventTask);
+            }
+          }
+  
+          console.log("Evénement mis à jour avec succès : ", updatedEvent);
+          return res.json(updatedEvent);
+        } else {
+          return res.status(404).json({ message: "Event not found" });
+        }
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'événement : ", error);
+        return res.status(500).json({ message: error.message });
+      }
+    });
   }
 
   async deleteEvent(req: Request, res: Response) {
