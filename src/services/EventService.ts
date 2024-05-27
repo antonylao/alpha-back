@@ -76,6 +76,7 @@ export class EventService {
     const event = await this.getEventById(id);
     if (event) {
       await this.eventRepository.delete(id);
+      console.log("Event deleted successfully")
       return true;
     }
     return false;

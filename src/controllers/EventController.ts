@@ -129,9 +129,7 @@ export class EventController {
          
           console.log('les users: '+ users)
          
-          // users.forEach(user => {
-          //   sendEmail(user.email, user.role); 
-          // });
+         
           users.forEach(user => {
             sendEmail(user.email, user.role, 'created');
           });
