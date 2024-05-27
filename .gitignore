@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .env
+docker-compose.yml
 
 # Editor directories and files
 .vscode/*
@@ -23,5 +24,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#sandbox files
+sandbox.ts
 
 uploads

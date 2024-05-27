@@ -4,8 +4,8 @@ import { VolunteerAssignment } from "./VolunteerAssignment";
 
 
 export enum Role {
-  ADMIN = "admin",
-  VOLUNTEER = "volunteer"
+  ADMIN = 1,
+  VOLUNTEER = 2
 }
 
 @Entity()
@@ -25,14 +25,22 @@ export class User {
   lastname: string;
   @Column({ type: "varchar", length: 300, unique: true })
   email: string;
-  @Column({ type: "varchar", length: 300 })
+  @Column({ type: "varchar", length: 20 })
+  phone: string;
+  @Column({ type: "varchar", length: 70 })
   password: string;  //password hashé
-  @Column({ type: "varchar", length: 300, nullable: true })
-  profilePicture: string; //chemin url
+  @Column({ type: "varchar", length: 50, nullable: true })
+  profilePicture: string; //nom fichier + extension 
   @Column({ type: "boolean", default: false })
   warning: boolean;
   @Column({ type: "boolean", default: false })
   ban: boolean;
+  @Column({ type: "varchar", nullable: true })
+  token: string;
+  @Column({ type: "varchar", nullable: true })
+  refreshToken: string;
+  @Column({ type: "boolean", default: false })
+  active: boolean;
 
   @OneToMany(() => VolunteerTaskPreference, volunteerTaskPreference => volunteerTaskPreference.user)
   volunteerTaskPreferences: VolunteerTaskPreference[];

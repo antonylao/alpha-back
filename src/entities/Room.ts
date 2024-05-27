@@ -5,11 +5,11 @@ import { Event } from "./Event";
 export class Room {
   @PrimaryGeneratedColumn()
   id: number
-  @Column({ type: "varchar", length: 75 })
+  @Column({ type: "varchar", length: 75, unique: true })
   name: string;
   @Column({ type: "integer", unsigned: true })
   capacity: number;
-  @Column({ type: "integer", unsigned: true })
+  @Column({ type: "integer", unsigned: true, unique: true })
   numberRoom: number;
 
   //pas de clé étrangère

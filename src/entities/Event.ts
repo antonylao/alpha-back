@@ -4,9 +4,9 @@ import { EventTask } from "./EventTask";
 import { VolunteerAssignment } from "./VolunteerAssignment";
 
 export enum EventType {
-  CONCERT = "concert",
-  THEATRE = "theatre",
-  STANDUP = "standup"
+  CONCERT = 1,
+  THEATRE = 2,
+  STANDUP = 3
 }
 
 @Entity()
@@ -26,8 +26,8 @@ export class Event {
   startOn: Date;
   @Column({ type: "time" })
   duration: string; //? pas sûr
-  @Column({ type: "varchar", length: 300, nullable: true })
-  picture: string; //path
+  @Column({ type: "varchar", length: 50, nullable: true })
+  picture: string; //nom du fichier et extension
 
   @ManyToOne(() => Room, (room) => room.events, { nullable: false, onDelete: 'CASCADE' })
   room: Room;
