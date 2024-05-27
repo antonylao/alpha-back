@@ -1,12 +1,42 @@
-import { Not } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Role, User } from "../entities/User";
-import { VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { AppError, HttpCode } from "../utils/AppError";
 
 export class UserService {
    private userRepository = AppDataSource.getRepository(User)
   
+
+  async create(user: Partial<User>) {
+    const newUser = this.userRepository.create(user)
+    await this.userRepository.save(newUser)
+    return newUser
+  }
+
+  async validVolunteerId(id: number): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: id, role: Role.VOLUNTEER },
+      select: { id: true }
+    });
+
+    if (user === null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async validOrganiserId(id: number): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: id, role: Role.ADMIN },
+      select: { id: true }
+    });
+
+    if (user === null) {
+      return false;
+    }
+
+    return true;
+  }
 
   async getVolunteerById(id: number): Promise<User> {
     try {
@@ -20,6 +50,8 @@ export class UserService {
       throw error
     }
   }
+
+
   async getOrganiserById(id: number): Promise<User> {
     try {
       const user = await this.userRepository.findOne({
@@ -30,7 +62,9 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          password: true
+          password: true,
+          token: true,
+          refreshToken: true
         }
       });
 
@@ -39,6 +73,14 @@ export class UserService {
       }
 
       return user
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getByEmail(email: string, role: Role) {
+    try {
+      return await this.userRepository.findOne({ where: { email, role } });
     } catch (error) {
       throw error
     }
@@ -70,10 +112,12 @@ export class UserService {
   }
 
 
+
+
   async update(id: number, user: Partial<User>): Promise<User> {
     await this.userRepository.update(id, user);
     console.log("🚀 ~ UserService ~ update ~ user:", user)
-    return this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async getVolunteerChangePassword(id: number): Promise<User> {

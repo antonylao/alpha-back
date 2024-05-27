@@ -26,9 +26,9 @@ export class VolunteerAssignment {
   })
   status: Status; //define with "Status.<ENUM>"
 
-  @Column({ type: "varchar", length: 300, nullable: true })
+  @Column({ type: "varchar", length: 300, nullable: true, default: null })
   volunteerComment: string;
-  @Column({ type: "tinyint", unsigned: true, nullable: true }) //min: 1, max: 5: dans l'app
+  @Column({ type: "tinyint", unsigned: true, nullable: true, default: null }) //min: 1, max: 5: dans l'app
   organiserRating: number;
 
   @ManyToOne(() => User, (user) => user.volunteerAssignments, { nullable: false, onDelete: 'CASCADE' })

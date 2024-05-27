@@ -6,6 +6,10 @@
             "DOM"
         ],
         "target": "es5",
+        "typeRoots": [
+            "./src/modules",
+            "./node_modules/@types",
+        ],
         "module": "commonjs",
         "moduleResolution": "node",
         "outDir": "./build",

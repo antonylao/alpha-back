@@ -35,6 +35,12 @@ export class User {
   warning: boolean;
   @Column({ type: "boolean", default: false })
   ban: boolean;
+  @Column({ type: "varchar", nullable: true })
+  token: string;
+  @Column({ type: "varchar", nullable: true })
+  refreshToken: string;
+  @Column({ type: "boolean", default: false })
+  active: boolean;
 
   @OneToMany(() => VolunteerTaskPreference, volunteerTaskPreference => volunteerTaskPreference.user)
   volunteerTaskPreferences: VolunteerTaskPreference[];

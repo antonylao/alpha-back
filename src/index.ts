@@ -4,16 +4,30 @@ import * as dotenv from "dotenv"
 import { Routes } from "./routes";
 import bodyParser from "body-parser";
 import { AppDataSource } from "./data-source";
-import { AppError } from "./utils/AppError";
+import { AppError, HttpCode } from "./utils/AppError";
+import { jwtCheck } from "./middlewares/jwtCheck";
+import { jwtCheckRefresh } from "./middlewares/jwtCheckRefresh";
+import { organiserCheck, volunteerCheck } from "./middlewares/userCheck";
 import cors from "cors";
-// import fileupload from "express-fileupload";
-
-const app = express()
-
+//keep it for dev
+import { transformRoutesForFront } from "./utils/MetaUtils";
+import { errorHandler } from "./middlewares/errorHandler";
 
 
 dotenv.config()
-console.log('variable : '+ process.env.DB_PORT)
+
+const app = express()
+app.use(cors());
+
+console.log('variable : ' + process.env.DB_PORT)
+
+app.use("/auth/refreshToken", jwtCheckRefresh)
+app.use("/api", jwtCheck)
+app.use("/api/organiserCheck", organiserCheck)
+app.use("/api/volunteerCheck", volunteerCheck)
+
+//to get route obj for front app
+console.log(transformRoutesForFront({ beginningSlash: false }))
 
 AppDataSource.initialize()
     .then(() => {
@@ -34,10 +48,12 @@ AppDataSource.initialize()
         //app.use(bodyParser.json({limit:'15MB'}))
         Routes.forEach(route => {
             (app as any)[route.method](route.route, (req: Request, res: Response, next: NextFunction) => {
+                console.log("route called: ", route)
                 const result = (new (route.controller as any))[route.action](req, res, next)
                 if (result instanceof Promise) {
                     result.then(
-                        result => result !== null && result !== undefined ? res.send(result) : undefined
+                        result => result !== null && result !== undefined ?
+                            result.status ? res.status(result.status).send(result) : res.send(result) : undefined
                     )
                 } else if (result !== null && result !== undefined) {
                     res.json(result)
@@ -48,28 +64,19 @@ AppDataSource.initialize()
             //     res.send(result)
             // })
 
-            //error handling
-            app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-                if (res.headersSent) {
-                    return next(err)
-                }
-                if (err instanceof AppError) {
-                    res.status(err.httpCode).send(err)
-                    return
-                }
-                const message = err.message ? err.message : err
-                res.status(500).send({ message })
-            })
+            app.use(errorHandler)
         })
     }).catch((err) => {
         console.error("Error during Data Source initialization", err)
     })
+
 
 // app.get("/test", (req: Request, res: Response, next: Function)=>{
 //     console.log("coucou");
 //     res.send("coucou tout le monde")
 // })
 
+// app.use(errorHandler)
 
 app.listen(process.env.PORT)
 console.log("express running on port :", process.env.PORT)

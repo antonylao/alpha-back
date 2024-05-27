@@ -1,12 +1,19 @@
 import { AppDataSource } from "../data-source";
 import { VolunteerAssignmentQueries } from "../utils/queries";
 import { Role, User } from "../entities/User";
-import { AppError, HttpCode } from "../utils/AppError";
+import { AppError, ErrorName, HttpCode } from "../utils/AppError";
 import { Status, VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { FindOneOptions, createQueryBuilder, getRepository } from "typeorm";
 import { EventTask } from "../entities/EventTask";
 import { Task } from "../entities/Task";
 import { isDefaultClause } from "typescript";
+import { UserService } from "./UserService";
+import { ReqParamIds, ReqParamIdsForCreation } from "../controllers/VolunteerAssignmentController";
+import { LessThan, MoreThan } from "typeorm";
+import { Event } from "../entities/Event";
+
+
+
 
 export class VolunteerAssignmentService {
   private volunteerAssignmentRepository = AppDataSource.getRepository(VolunteerAssignment)
@@ -15,13 +22,74 @@ export class VolunteerAssignmentService {
   private eventRepository = AppDataSource.getRepository(Event);
   private taskRepository = AppDataSource.getRepository(Task);
 
+
+  private userService = new UserService();
+  // private eventTaskService = new EventTaskService();
+
+
+  // either create an assignment, or update it if it already exists
+  async createPendingVolunterAssignment(params: ReqParamIdsForCreation) {
+    try {
+      //find user en eventTask entities
+      const user = await this.userService.getVolunteerById(params.userId)
+
+      //*method entity manager API
+      const eventTask = await AppDataSource.getRepository(EventTask)
+        .createQueryBuilder("et")
+        .where("et.eventId = :eventId", { eventId: params.eventId })
+        .andWhere("et.taskId = :taskId", { taskId: params.taskId })
+        .getOne()
+
+      if (eventTask === null || eventTask === undefined) {
+        throw new AppError(HttpCode.BAD_REQUEST, `Il n'existe pas de donnée dans la table eventTask avec l'association de clés primaires {eventId: ${params.eventId}, taskId: ${params.eventId}}`)
+      }
+
+      //if primary keys already exist, return error message
+      const existingAssignment = await this.volunteerAssignmentRepository
+        .createQueryBuilder("va")
+        .where("va.eventTaskEventId = :eventId", { eventId: params.eventId })
+        .andWhere("va.eventTaskTaskId = :taskId", { taskId: params.taskId })
+        .andWhere("va.userId = :userId", { userId: params.userId })
+        .getOne()
+
+
+      if (existingAssignment !== null && existingAssignment !== undefined) {
+        console.log("🚀 ~ VolunteerAssignmentService ~ createPendingVolunterAssignment ~ existingAssignment:", existingAssignment)
+
+        switch (existingAssignment.status) {
+          case Status.CANCELED:
+          case Status.REFUSED:
+            console.log("🚀 ~ VolunteerAssignmentService ~ createPendingVolunterAssignment ~ existingAssignment:", existingAssignment)
+            existingAssignment.status = Status.PENDING
+            return await this.update(existingAssignment)
+            break;
+          default:
+            const error = new AppError(HttpCode.BAD_REQUEST, `Il existe déjà une donnée dans la table volunteerAssignment avec l'association de clés primaires ${JSON.stringify(params)} dont le status n'est ni refusé, ni annulé`)
+            throw error
+            break;
+        }
+        //!change here
+        // const error = new AppError(HttpCode.BAD_REQUEST, `Il existe déjà une donnée dans la table volunteerAssignment avec l'association de clés primaires ${JSON.stringify(params)}`)
+        // throw error
+      }
+
+
+
+      //create body
+      const body = { user, eventTask, status: Status.PENDING }
+      console.log("🚀 ~ VolunteerAssignmentService ~ createPendingVolunterAssignment ~ body:", body)
+      const assignment = await this.volunteerAssignmentRepository.create(body)
+      await this.volunteerAssignmentRepository.save(assignment)
+      return assignment
+    } catch (error) {
+      throw error
+    }
+  }
+
   async getPastEventsInfoForOrganiserVolunteerCard(volunteerId: number) {
     try {
-
-      //vérif que le voluntterId existe
-      //!changer par la fonction dans UserService getVolunteerById()
-      const user = await this.userRepository.findOne({ where: { id: volunteerId, role: Role.VOLUNTEER } });
-      if (user === null) {
+      const validVolunteerId = await this.userService.validVolunteerId(volunteerId)
+      if (!validVolunteerId) {
         throw new AppError(HttpCode.NOT_FOUND, `Pas de bénévole à l'id ${volunteerId}`)
       }
 
@@ -55,6 +123,7 @@ export class VolunteerAssignmentService {
             room: {
               name: true
             },
+            id: true,
             title: true,
             type: true,
             startOn: true
@@ -93,7 +162,8 @@ export class VolunteerAssignmentService {
             },
             title: true,
             type: true,
-            startOn: true
+            startOn: true,
+            id: true
           },
           task: {
             name: true,
@@ -105,12 +175,13 @@ export class VolunteerAssignmentService {
         }
       },
       where: {
-        status: Status.PENDING
+        status: Status.PENDING,
       },
     })
     
     return pendingRequest
   }
+
 
   //getAll volunteerAssigment
 
@@ -179,5 +250,82 @@ export class VolunteerAssignmentService {
     // });
 
     // return await this.volunteerAssignmentRepository.save(newVolunteerAssignment);
+  }
+
+  
+  //general function: not used
+  async getAllPrimaryFields(params: ReqParamIds) {
+    //*rawquery method
+    const queryData = await this.volunteerAssignmentRepository.query(
+      VolunteerAssignmentQueries.allPrimaryFields, [params.volunteerId, params.eventId, params.taskId]
+    )
+
+    return queryData[0];
+  }
+
+  async getFinishedAssignmentsInfo(volunteerId: number) {
+    try {
+      const queryData = await this.volunteerAssignmentRepository.query(
+        // VolunteerAssignmentQueries.finishedAssignmentsInfo2, [volunteerId]
+        VolunteerAssignmentQueries.finishedAssignmentsInfo, [Status.ACCEPTED.toString(), volunteerId]
+      )
+
+      return queryData;
+    } catch (error) {
+      throw error
+    }
+  }
+  async getAssignmentForUpdate(params: ReqParamIds) {
+    try {
+      const queryData = await this.volunteerAssignmentRepository.query(
+        VolunteerAssignmentQueries.assignmentForCommentUpdate
+        , [params.volunteerId, params.eventId, params.taskId]
+      )
+
+      return queryData[0];
+    } catch (error) {
+      throw error
+    }
+  }
+
+
+  async getAssociatedEventDateAndDuration(params: ReqParamIds) {
+    try {
+      // const volunteerAssignment = this.volunteerAssignmentRepository.find({
+      //   relations: {
+      //     eventTask: {
+      //       event: true,
+      //       task: true
+      //     },
+      //   },
+      //   where: {
+      //     user: { id: params.volunteerId },
+      //     // eventTask: {
+      //     // event: { id: params.eventId },
+      //     // task: { id: params.taskId }
+      //     // },
+      //   },
+      // })
+
+      // return volunteerAssignment
+
+      //*raw query method
+      const queryData = await this.volunteerAssignmentRepository.query(
+        VolunteerAssignmentQueries.associatedEventDateAndDuration, [params.volunteerId, params.eventId, params.taskId]
+      )
+
+      return queryData[0];
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async update(assignment: Partial<VolunteerAssignment> & Pick<VolunteerAssignment, "id">) {
+    try {
+      return await this.volunteerAssignmentRepository.save(assignment)
+    } catch (error) {
+      throw error
+    }
+
   }
 }
