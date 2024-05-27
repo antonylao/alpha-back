@@ -23,4 +23,6 @@ export class EventTaskService {
       const newEventTask = this.eventTaskRepository.create(eventTasks);
       return this.eventTaskRepository.save(newEventTask);
   }
+
+ 
 }

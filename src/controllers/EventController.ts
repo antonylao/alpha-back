@@ -129,8 +129,11 @@ export class EventController {
          
           console.log('les users: '+ users)
          
+          // users.forEach(user => {
+          //   sendEmail(user.email, user.role); 
+          // });
           users.forEach(user => {
-            sendEmail(user.email, user.role); 
+            sendEmail(user.email, user.role, 'created');
           });
           
           const newEvent = await eventService.createEvent(eventData);
@@ -180,11 +183,11 @@ export class EventController {
 
 
 
+ 
+
   async updateEvent(req: Request, res: Response) {
-
-   
     const handleUpload = upload.single('picture');
-
+  
     handleUpload(req, res, async (err: any) => {
       if (err) {
         console.error("message on upload error: " + err);
@@ -208,11 +211,9 @@ export class EventController {
           eventData.picture = req.file.filename;
         }
   
-       
         const updatedEvent = await eventService.updateEvent(id, eventData);
   
         if (updatedEvent) {
-          
           const eventTasksToUpdate = JSON.parse(eventData.selectedTasks || '[]');
   
           if (eventTasksToUpdate && eventTasksToUpdate.length > 0) {
@@ -229,11 +230,16 @@ export class EventController {
   
               console.log(formattedEventTask);
   
-              const createOneEventTask = await eventTaskService.insertEventTask(formattedEventTask);
-  
-              console.log('createOneEventTask: ', createOneEventTask);
+             
             }
           }
+  
+          const userRepository = AppDataSource.getRepository(User);
+          const users = await userRepository.find();
+  
+          users.forEach(user => {
+            sendEmail(user.email, user.role, updatedEvent.id, 'updated');
+          });
   
           console.log("Evénement mis à jour avec succès : ", updatedEvent);
           return res.json(updatedEvent);
@@ -246,6 +252,7 @@ export class EventController {
       }
     });
   }
+  
 
   async deleteEvent(req: Request, res: Response) {
     const id = parseInt(req.params.id);

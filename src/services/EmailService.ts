@@ -5,7 +5,7 @@ const path = require('path');
 
 const nodemailer = require("nodemailer");
 
-async function sendEmail(userEmail, role) {
+async function sendEmail(userEmail, role, eventAction) {
   let transporter = nodemailer.createTransport({
     
     service: 'gmail',
@@ -17,13 +17,25 @@ async function sendEmail(userEmail, role) {
 
   
 
+  let templatePath;
   
 
-  let templatePath;
   if (role === 1) {
-    templatePath = path.join(__dirname, '../templates/AdminEmail.html');
+    if (eventAction === 'created') {
+      templatePath = path.join(__dirname, '../templates/AdminEmail.html');
+     
+    } else {
+      templatePath = path.join(__dirname, '../templates/AdminUpdateEmail.html');
+     
+    }
   } else if (role === 2) {
-    templatePath = path.join(__dirname, '../templates/VolunteerEmail.html');
+    if (eventAction === 'created') {
+      templatePath = path.join(__dirname, '../templates/VolunteerEmail.html');
+     
+    } else {
+      templatePath = path.join(__dirname, '../templates/VolunteerUpdateEmail.html');
+    
+    }
   }
 
  
@@ -32,8 +44,8 @@ async function sendEmail(userEmail, role) {
   let mailOptions = {
     from: process.env.ADMIN_EMAIL,
     to: userEmail,
-    subject: 'Nouvel événement créé',
-    text: mailContent,
+    subject: 'Alpha project vous informe',
+    html: mailContent,
     attachments: [{
        filename: "Alpha.png", 
        path: './src/templates/img/Alpha.png' }],
