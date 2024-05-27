@@ -9,6 +9,7 @@ export enum Progression {
   AWAITING_CONFIRMATION = 3,
   COMPLETED = 4
 }
+// 1 not started, 2 in progress, 3 awaiting confirmation, 4 completed
 
 @Entity()
 //la ligne en dessous ne sert à rien, mais je le garde pour la clarté
@@ -25,10 +26,11 @@ export class EventTask {
 
 
 
-  @PrimaryColumn({ type: "integer", name: "eventId" })
+  @PrimaryColumn({ type: "integer", name: "eventId"})
   @ManyToOne(() => Event, (event) => event.eventTasks, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: "eventId" })
   event: Event;
+
   @PrimaryColumn({ type: "integer", name: "taskId" })
   @ManyToOne(() => Task, (task) => task.eventTasks, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: "taskId" })

@@ -1,9 +1,13 @@
 import { UserController } from "./controllers/UserController";
 import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
-import { EventController } from '../src/controllers/EventController'
+import { EventController } from '../src/controllers/EventController';
+import { upload } from './multerConfig';
+import { TaskController } from "./controllers/TaskController";
 import { EventTaskController } from "./controllers/EventTaskController";
+import { RoomController } from "./controllers/RoomController";
 import { AuthController } from "./controllers/AuthController";
+
 
 export const Routes = [
     // {
@@ -38,9 +42,8 @@ export const Routes = [
         controller: AuthController,
         action: "loginOrganiser"
     },
-
     { // ** refreshToken
-        method: "post",
+        method: "get",
         route: "/auth/refreshToken",
         controller: AuthController,
         action: "refreshToken"
@@ -69,6 +72,17 @@ export const Routes = [
         controller: AuthController,
         action: "loginVolunteer"
     },
+
+    //*TASK
+
+    //   async getAllTasksNames(req: Request, res: Response, next: NextFunction) {
+    {
+        method: "get",
+        route: "/api/task",
+        controller: TaskController,
+        action: "getAllTasks"
+    },
+
 
     //*VOLUNTEER
     { // ** readAllVolunteersForOrganiserVolunteerIndex
@@ -103,13 +117,13 @@ export const Routes = [
     },
     {
         method: "patch",
-        route: "/volunteer/:volunteerId/warning",
+        route: "/api/organiserCheck/volunteer/:volunteerId/warning",
         controller: UserController,
         action: "applyWarning"
     },
     {
         method: "patch",
-        route: "/volunteer/:volunteerId/ban",
+        route: "/api/organiserCheck/volunteer/:volunteerId/ban",
         controller: UserController,
         action: "applyBan"
     },
@@ -118,7 +132,7 @@ export const Routes = [
     //*VOLUNTEER ASSIGNMENTS
     {
         method: "get",
-        route: "/api/volunteer/:volunteerId/past_events",
+        route: "/api/organiserCheck/volunteer/:volunteerId/past_events",
         controller: VolunteerAssignmentController, // nom du fichier
         action: "readPastEventsInfoForOrganiserVolunteerCard" // nom de la fonction dans le fichier
     },
@@ -136,33 +150,33 @@ export const Routes = [
     },
     {
         method: "patch",
-        route: "/api/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
+        route: "/api/organiserCheck/volunteer/:volunteerId/past_events/:eventId/task/:taskId/rating",
         controller: VolunteerAssignmentController,
         action: "updateRating"
     },
     {
         method: "get",
-        route: "/volunteer/:volunteerId/my_events",
+        route: "/api/volunteerCheck/volunteer/signedInId/my_events",
         controller: VolunteerAssignmentController,
         action: "getFinishedAssignmentsInfo"
     },
     {
         method: "patch",
-        route: "/api/event/:eventId/task/:taskId/comment",
+        route: "/api/volunteerCheck/event/:eventId/task/:taskId/comment",
         controller: VolunteerAssignmentController,
         action: "updateComment"
     },
 
     {
         method: "post",
-        route: "/api/event/:eventId/task/:taskId",
+        route: "/api/volunteerCheck/event/:eventId/task/:taskId",
         controller: VolunteerAssignmentController,
         action: "createPendingVolunterAssignment"
     },
 
     {
         method: "patch",
-        route: "/api/event/:eventId/task/:taskId/cancel",
+        route: "/api/volunteerCheck/event/:eventId/task/:taskId/cancel",
         controller: VolunteerAssignmentController,
         action: "cancelAssignment"
     },
@@ -195,6 +209,7 @@ export const Routes = [
         action: "updateOrganiserPassword" // nom de la fonction dans le fichier
     },
 
+
     //* EVENT
     { // ** getAllEvents
         method: "get",
@@ -202,10 +217,108 @@ export const Routes = [
         controller: EventController,
         action: "getAllEvents"
     },
+
+    
+    {
+        method: "get",
+        route: "/event/title/:title",
+        controller: EventController,
+        action: "getEventByTitle"
+    },
+    {
+        method: "get",
+        route: "/event/type/:type",
+        controller: EventController,
+        action: "getEventByType"
+    },
+    {
+        method: "get",
+        route: "/event/:id",
+        controller: EventController,
+        action: "getEventById"
+    },
+
+    {
+        method: "post",
+        route: "/event",
+        controller: EventController,
+        action: "createEvent"
+    },
+    {
+        method: "put",
+        route: "/event/:id",
+        controller: EventController,
+        action: "updateEvent"
+    },
+    {
+        method: "delete",
+        route: "/event/:id",
+        controller: EventController,
+        action: "deleteEvent"
+    },
+    // utilisation ultérieure
+    // {
+    //     method: "get",
+    //     route: "/event/date/:date",
+    //     controller: EventController,
+    //     action: "getEventsByDate"
+    // },
+
+    // getAll volunteerAssingment : 
+    {
+        method: "get",
+        route: "/volunteerAssignment",
+        controller: VolunteerAssignmentController,
+        action : "getAllVolunteerAssignments"
+    },
+
+    {
+        method: "post",
+        route:"/createAssignment",
+        controller: VolunteerAssignmentController,
+        action :"createAssignment"
+
+    },
+    // afficher les tasks
+
+    {
+        method: "get",
+        route: "/task",
+        controller: TaskController,
+        action : "getAllTasks"
+    },
+
+    //  créer un event task
+
+    {
+        method:"post",
+        route: "/event_task",
+        controller : EventTaskController,
+        action : "createEventTask"
+    },
+
+    // afficher toute les rooms
+
+    {
+        method: "get",
+        route: "/room",
+        controller: RoomController,
+        action : "getAllRooms"
+    },
+
+    {
+
+        method: "get",
+        route: "/room/:id",
+        controller: RoomController,
+        action : "getRoomById"
+    },
+
+
     //get upcoming events for the volunteer app
     {
         method: "get",
-        route: "/api/event/upcoming",
+        route: "/api/volunteerCheck/event/upcoming",
         controller: EventController,
         action: "getAllUpcomingEvents"
     },
@@ -263,7 +376,7 @@ export const Routes = [
     //*EVENT_TASK
     {
         method: "get",
-        route: "/event/upcoming/:eventId/task",
+        route: "/api/volunteerCheck/event/upcoming/:eventId/task",
         controller: EventTaskController,
         action: "getUpcomingEventInfosForTaskApply"
     },
@@ -291,4 +404,5 @@ export const Routes = [
         controller: EventTaskController,
         action: "deleteEventTaskById"
     },
+
 ]

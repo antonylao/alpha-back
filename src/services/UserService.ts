@@ -3,7 +3,8 @@ import { Role, User } from "../entities/User";
 import { AppError, HttpCode } from "../utils/AppError";
 
 export class UserService {
-  private userRepository = AppDataSource.getRepository(User)
+   private userRepository = AppDataSource.getRepository(User)
+  
 
   async create(user: Partial<User>) {
     const newUser = this.userRepository.create(user)

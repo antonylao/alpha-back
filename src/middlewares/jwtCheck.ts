@@ -17,6 +17,7 @@ export async function jwtCheck(req: Request, res: Response, next: NextFunction) 
 
     //initialization user id
     const id = payload.id
+    console.log("🚀 ~ jwtCheck ~ id:", id)
     //token en headers === token en BDD? non => 403
     const userService = new UserService()
     //get user
@@ -37,6 +38,7 @@ export async function jwtCheck(req: Request, res: Response, next: NextFunction) 
     req['user'] = payload
     next()
   } catch (error) {
+
     next(error)
   }
 

@@ -7,6 +7,8 @@ import { EventService } from "../services/EventService";
 export type ReqParamIds = { volunteerId: number, eventId: number, taskId: number }
 export type ReqParamIdsForCreation = { userId: number, eventId: number, taskId: number }
 
+const volunteerAssignmentService = new VolunteerAssignmentService();
+
 export class VolunteerAssignmentController {
   private volunteerAssignmentService = new VolunteerAssignmentService()
 
@@ -92,10 +94,39 @@ export class VolunteerAssignmentController {
     }
   }
 
+  async getAllVolunteerAssignments (req: Request, res: Response) {
+    try {
+      const volunteerAssignments = await volunteerAssignmentService.getAllVolunteerAssignments();
+      if(!volunteerAssignments){
+        console.log("tableau vide")
+      }
+      console.log("il devrait y avoir des valeurs " + volunteerAssignments)
+      res.json(volunteerAssignments);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+}
+
+async createAssignment(req: Request, res: Response) {
+
+  const userId =1;
+  const eventId = 1;
+  const taskId = 1
+
+ return await this.volunteerAssignmentService.createVolunteerAssignment(1, 1,1 )
+  // try {
+  //   const newEvent = await eventService.createEvent(req.body);
+  //   res.status(201).json(newEvent);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
+  
+}
   //:volunteerId
   async getFinishedAssignmentsInfo(req: Request, res: Response, next: Function) {
     try {
-      const volunteerId = +req.params.volunteerId
+      const volunteerId = req.user.id
+      console.log("🚀 ~ VolunteerAssignmentController ~ getFinishedAssignmentsInfo ~ volunteerId:", volunteerId)
       const finishedEvents = await this.volunteerAssignmentService.getFinishedAssignmentsInfo(volunteerId)
       console.log("🚀 ~ VolunteerAssignmentController ~ getFinishedAssignmentsInfo ~ finishedEvents:", finishedEvents)
 

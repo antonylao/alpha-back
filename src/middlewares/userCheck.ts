@@ -13,7 +13,6 @@ export async function volunteerCheck(req: Request, res: Response, next: NextFunc
   } catch (error) {
     next(error)
   }
-
 }
 
 export async function organiserCheck(req: Request, res: Response, next: NextFunction) {

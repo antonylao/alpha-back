@@ -11,6 +11,8 @@ export enum Status {
   CANCELED = 4
 }
 
+// 1 pending, 2 accepted, 3 refused, 4 cancelled
+
 @Entity()
 // @Unique(["task", "event"])
 @Unique(["eventTask", "user"])
@@ -38,10 +40,7 @@ export class VolunteerAssignment {
     { name: "eventTaskTaskId", referencedColumnName: "task" },
   ])
   eventTask: EventTask;
-  // @ManyToOne(() => Task, (task) => task.volunteer_assignments, { nullable: false, onDelete: 'CASCADE' })
-  // task: Task;
-  // @ManyToOne(() => Event, (event) => event.volunteer_assignments, { nullable: false, onDelete: 'CASCADE' })
-  // event: Event;
+  
 
   @CreateDateColumn()
   createdAt: Date

@@ -1,3 +1,5 @@
+
+import { Connection, EntityManager, FindManyOptions, FindOneOptions, FindOptions, FindOptionsWhere, Like, Repository } from "typeorm";
 import { AppDataSource } from "../data-source"
 import { Status } from "../entities/VolunteerAssignment";
 import { EventTaskQueries } from "../utils/queries";
@@ -9,11 +11,33 @@ import { SelectQueryBuilder } from "typeorm";
 
 export class EventTaskService {
 
-  private eventTaskRepository = AppDataSource.getRepository(EventTask);
-  private eventRepository = AppDataSource.getRepository(Event);
-  private taskRepository = AppDataSource.getRepository(Task);
+    private eventTaskRepository = AppDataSource.getRepository(EventTask);
+    private eventRepository = AppDataSource.getRepository(Event);
+    private taskRepository = AppDataSource.getRepository(Task);
 
-  async getUpcomingEventInfosForTaskApply(eventId: number) {
+    async createEventTask(eventTaskData: Partial<EventTask>): Promise<EventTask> {
+        console.log('about to create event_task:', eventTaskData)
+        const newEventTask = this.eventTaskRepository.create(eventTaskData);
+        return await this.eventTaskRepository.save(newEventTask);
+    }
+    
+    async insertEventTask(eventTaskData: Partial<EventTask>): Promise<any> {
+      console.log('about to create event_task:', eventTaskData)
+      const inserted = await this.eventTaskRepository.insert(eventTaskData)
+      return inserted
+  }
+    
+    async createManyEventTask(eventTasks: Partial<EventTask[]>): Promise<EventTask[]> {
+      console.log('about to create event_task:', eventTasks)
+      const newEventTask = this.eventTaskRepository.create(eventTasks);
+      return this.eventTaskRepository.save(newEventTask);
+  }
+
+
+
+ 
+
+  async getUpcomingEventInfosForTaskApply(eventId: number, volunteerId: number) {
     try {
       //trouver le volunteer_assignment_count_validated
       const queryData = await this.eventTaskRepository.query(
@@ -29,7 +53,27 @@ export class EventTaskService {
         }
       })
 
-      return queryData;
+      //CONDITIONS
+      //NB: j'ai besoin d'avoir tous les eventTasks avec les infos associées: 
+      // - le queryData renvoie au minimum une ligne avec l'eventTask, 
+      // - le queryData renvoie plusieurs lignes si il y a plusieurs volunteerAssignments associés à l'eventTask
+      //NB: j'ai besoin de n'avoir qu'une seule ligne associée à un eventTask donné dans mon retour, et celui associé au volunteerId s'il existe
+
+      const filteredQueryData = []
+      //sort queryData to have those associated with volunteerId first
+      queryData.sort((obj: any) => obj.userId === volunteerId ? -1 : 1)
+
+      queryData.forEach((objData: any) => {
+        //if eventId and taskId is not in any elt of return obj
+        if (filteredQueryData.every((objReturn) => {
+          return objReturn.eventId !== objData.eventId ||
+            objReturn.taskId !== objData.taskId
+        })) {
+          filteredQueryData.push(objData)
+        }
+      })
+
+      return filteredQueryData;
     } catch (error) {
       throw error
     }
@@ -99,4 +143,5 @@ export class EventTaskService {
       throw error
     }
   }
+
 }
