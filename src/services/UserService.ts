@@ -79,6 +79,7 @@ export class UserService {
   }
 
   async getByEmail(email: string, role: Role) {
+    
     try {
       return await this.userRepository.findOne({ where: { email, role } });
     } catch (error) {

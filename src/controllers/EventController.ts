@@ -57,7 +57,7 @@ export class EventController {
 
     try {
       const events = await this.eventService.getAllEvents();
-      console.log("🚀 ~ EventController ~ getAllEvents ~ events:", events)
+      // console.log("🚀 ~ EventController ~ getAllEvents ~ events:", events)
       return {
         status: HttpCode.OK,
         datas: events,
@@ -87,7 +87,7 @@ export class EventController {
     try {
       const event = await this.eventService.getEventById(id);
       if (event) {
-        console.log("🚀 ~ EventController ~ getEventById ~ event:", event)
+        // console.log("🚀 ~ EventController ~ getEventById ~ event:", event)
         return {
           status: HttpCode.OK,
           datas: event,
@@ -124,7 +124,7 @@ export class EventController {
       if (!event && event === null) {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
-        console.log("🚀 ~ EventController ~ readCommentsByEventId ~ event:", event)
+        // console.log("🚀 ~ EventController ~ readCommentsByEventId ~ event:", event)
         return {
           status: HttpCode.OK,
           datas: event,
@@ -139,11 +139,11 @@ export class EventController {
   async readRatingsByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.getRatingsByEventId(+req.params.event_id)
-      console.log("🚀 ~ EventController ~ readRatingsByEventId ~ event:", event)
+      // console.log("🚀 ~ EventController ~ readRatingsByEventId ~ event:", event)
       if (!event && event === null) {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
-        console.log("🚀 ~ EventController ~ readRatingsByEventId ~ event ratings:", event)
+        // console.log("🚀 ~ EventController ~ readRatingsByEventId ~ event ratings:", event)
         return {
           status: HttpCode.OK,
           datas: event,
@@ -158,11 +158,11 @@ export class EventController {
   async updateRatingsByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.updateRatingsFromEvent(+req.params.event_id, +req.params.task_id, +req.params.user_id, req.body)
-      console.log("🚀 ~ EventController ~ updateRatingsByEventId ~ event:", event)
+      // console.log("🚀 ~ EventController ~ updateRatingsByEventId ~ event:", event)
       if (!event && event === null) {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
-        console.log("🚀 ~ EventController ~ updateRatingsByEventId ~ event ratings:", event)
+        // console.log("🚀 ~ EventController ~ updateRatingsByEventId ~ event ratings:", event)
         return {
           status: HttpCode.OK,
           datas: event,
@@ -177,11 +177,11 @@ export class EventController {
   async updateStatusByEventId(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: VolunteerAssignment[], message: string }> {
     try {
       const event = await this.eventService.updateStatusFromEvent(+req.params.event_id, +req.params.task_id, +req.params.user_id, req.body)
-      console.log("🚀 ~ EventController ~ updateStatusFromEvent ~ event:", event)
+      // console.log("🚀 ~ EventController ~ updateStatusFromEvent ~ event:", event)
       if (!event && event === null) {
         throw new Error("pas de d'event à l'ID: " + req.params.event_id)
       } else {
-        console.log("🚀 ~ EventController ~ updateStatusFromEvent ~ event ratings:", event)
+        // console.log("🚀 ~ EventController ~ updateStatusFromEvent ~ event ratings:", event)
         return {
           status: HttpCode.OK,
           datas: event,
@@ -327,6 +327,7 @@ export class EventController {
       }
   
       const id = parseInt(req.params.id);
+      console.log('valeur de req params id: '+ JSON.stringify(req.params))
       console.log("ID de l'événement à mettre à jour : ", id);
       console.log("Données reçues dans le corps de la requête : ", req.body);
   
@@ -391,7 +392,8 @@ export class EventController {
 //     const id = parseInt(req.params.id);
 // // =======
   async deleteEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
-    const id = parseInt(req.params.event_id);
+    console.log('je rentre dans la fonction delete')
+    const id = parseInt(req.params.id);
 
     try {
       const result = await this.eventService.deleteEvent(id);

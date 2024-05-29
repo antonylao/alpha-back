@@ -5,6 +5,7 @@ import { Role, User } from "../entities/User";
 import { AppError, HttpCode } from "../utils/AppError";
 import bcrypt from 'bcrypt';
 import { MailerService } from "../services/MailerService";
+import { json } from "body-parser";
 
 
 export class AuthController {
@@ -144,8 +145,9 @@ export class AuthController {
 
       //vérifier que le mail n'existe pas en BDD: non => erreur 409
       const user = await this.userService.getByEmail(req.body.email, Role.VOLUNTEER)
+      console.log('le user est: '+JSON.stringify(req.body))
       if (user) {
-        throw new AppError(HttpCode.CONFLICT, "Adresse mail déjà utilisée")
+      return user  // throw new AppError(HttpCode.CONFLICT, "Adresse mail déjà utilisée")
       }
 
 

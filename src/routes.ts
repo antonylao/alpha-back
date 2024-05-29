@@ -336,13 +336,13 @@ export const Routes = [
     },
     { // ** updateEvent
         method: "put",
-        route: "/api/event/:event_id",
+        route: "/api/event/:id",
         controller: EventController,
         action: "updateEvent"
     },
     { // ** deleteEvent
         method: "delete",
-        route: "/api/event/:event_id",
+        route: "/api/event/:id",
         controller: EventController,
         action: "deleteEvent"
     },
