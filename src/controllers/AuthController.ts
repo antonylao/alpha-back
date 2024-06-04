@@ -145,9 +145,9 @@ export class AuthController {
 
       //vérifier que le mail n'existe pas en BDD: non => erreur 409
       const user = await this.userService.getByEmail(req.body.email, Role.VOLUNTEER)
-      console.log('le user est: '+JSON.stringify(req.body))
+      console.log('le user est: ' + JSON.stringify(req.body))
       if (user) {
-      return user  // throw new AppError(HttpCode.CONFLICT, "Adresse mail déjà utilisée")
+        throw new AppError(HttpCode.CONFLICT, "Adresse mail déjà utilisée")
       }
 
 

@@ -218,7 +218,7 @@ export const Routes = [
         action: "getAllEvents"
     },
 
-    
+
     {
         method: "get",
         route: "/event/title/:title",
@@ -250,12 +250,12 @@ export const Routes = [
         controller: EventController,
         action: "updateEvent"
     },
-    {
-        method: "delete",
-        route: "/event/:id",
-        controller: EventController,
-        action: "deleteEvent"
-    },
+    // {
+    //     method: "delete",
+    //     route: "/event/:id",
+    //     controller: EventController,
+    //     action: "deleteEvent"
+    // },
     // utilisation ultérieure
     // {
     //     method: "get",
@@ -269,14 +269,14 @@ export const Routes = [
         method: "get",
         route: "/volunteerAssignment",
         controller: VolunteerAssignmentController,
-        action : "getAllVolunteerAssignments"
+        action: "getAllVolunteerAssignments"
     },
 
     {
         method: "post",
-        route:"/createAssignment",
+        route: "/createAssignment",
         controller: VolunteerAssignmentController,
-        action :"createAssignment"
+        action: "createAssignment"
 
     },
     // afficher les tasks
@@ -285,16 +285,16 @@ export const Routes = [
         method: "get",
         route: "/task",
         controller: TaskController,
-        action : "getAllTasks"
+        action: "getAllTasks"
     },
 
     //  créer un event task
 
     {
-        method:"post",
+        method: "post",
         route: "/event_task",
-        controller : EventTaskController,
-        action : "createEventTask"
+        controller: EventTaskController,
+        action: "createEventTask"
     },
 
     // afficher toute les rooms
@@ -303,7 +303,7 @@ export const Routes = [
         method: "get",
         route: "/room",
         controller: RoomController,
-        action : "getAllRooms"
+        action: "getAllRooms"
     },
 
     {
@@ -311,7 +311,7 @@ export const Routes = [
         method: "get",
         route: "/room/:id",
         controller: RoomController,
-        action : "getRoomById"
+        action: "getRoomById"
     },
 
 

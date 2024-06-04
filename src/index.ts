@@ -27,7 +27,7 @@ app.use("/api/organiserCheck", organiserCheck)
 app.use("/api/volunteerCheck", volunteerCheck)
 
 //to get route obj for front app
-console.log(transformRoutesForFront({ beginningSlash: false }))
+// console.log(transformRoutesForFront({ beginningSlash: false }))
 
 AppDataSource.initialize()
     .then(() => {
@@ -35,14 +35,14 @@ AppDataSource.initialize()
 
 
         app.use('/uploads', express.static('uploads'));
-        
+
         app.use(cors());
         app.use(express.json());
         // https://github.com/mas-iota/nodejs-images-upload-boilerplate/blob/master/app.js
         app.use(express.urlencoded({
-            limit:'15MB',
+            limit: '15MB',
             extended: false,
-            
+
         }));
 
         //app.use(bodyParser.json({limit:'15MB'}))
