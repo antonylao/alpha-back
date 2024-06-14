@@ -4,22 +4,27 @@ import { v4 as uuidv4 } from "uuid"
 import { ValidateNested } from "class-validator";
 
 
-type RpcErrorType = {
-  err: {
-    error: string | object,
-    status: HttpCode
-  }
+export type ErrorFromMs = {
+  type: "ErrorFromMs"
+  status: HttpCode;
+  // use new Date().toISOString(),
+  timestamp: string;
+  message: string;
 }
 
-function isRpcError(obj: unknown): obj is RpcErrorType {
-  return typeof obj === "object" &&
-    obj !== null &&
-    obj !== undefined &&
-    "err" in obj &&
-    (typeof obj.err === "string" || typeof obj.err === "object") &&
-    "status" in obj &&
-    (typeof obj.status === "number" && Object.values(HttpCode).includes(obj.status))
+function isErrorFromMs(obj: unknown): obj is ErrorFromMs {
+  return typeof obj === "object" && "type" in obj && obj.type === "ErrorFromMs"
 }
+// function isError(obj: unknown): obj is RpcErrorType {
+//   return typeof obj === "object" &&
+//     obj !== null &&
+//     obj !== undefined &&
+//     "err" in obj
+// &&
+// (typeof obj.err === "string" || typeof obj.err === "object") &&
+// "status" in obj &&
+// (typeof obj.status === "number" && Object.values(HttpCode).includes(obj.status))
+// }
 
 const jc = JSONCodec()
 
@@ -51,20 +56,44 @@ export async function send(subject: string, data: any) {
   const res = await (await nc).request(subject, jc.encode({ data, id: uuidv4() }), { timeout: 1000 })
     .then((m) => {
       const msReturn = jc.decode(m.data)
-      console.log(`response: ${msReturn}`)
+      console.log(`response: ${JSON.stringify(msReturn)}`)
+      if (typeof msReturn !== "object") {
+        console.log("something is wrong... correct your ms please")
+        throw new AppError(HttpCode.INTERNAL_SERVER_ERROR, "wrong return in ms")
+      }
 
-      if (isRpcError(msReturn)) {
-        console.log(`return is RpcError: ${msReturn}`)
+      if (!("response" in msReturn)) {
+        console.log("case not handled")
+        throw new AppError(HttpCode.INTERNAL_SERVER_ERROR, "please implement case no response in nats.ts")
+      }
+
+      // custom error handling
+      if ("response" in msReturn) {
+        if (!isErrorFromMs(msReturn.response)) {
+          console.log("something is wrong in the return of the error.. correct please")
+          throw new AppError(HttpCode.INTERNAL_SERVER_ERROR, "wrong error return in ms or wrong identification in gateway")
+        }
+        throw new AppError(msReturn.response.status, msReturn.response.message)
+        // const HttpStatusValues = Object.values(HttpCode).filter((entry) => Number(entry) === entry);
+
+        // if (Object.keys(msReturn.err).includes("status") && HttpStatusValues.includes(msReturn.err.status)) {
+        //   console.log("🚀 ~ .then ~ Object.values(HttpCode).filter((entry) => Number(entry) === entry):", Object.values(HttpCode).filter((entry) => Number(entry) === entry))
+
+        // }
+        // console.log("msReturn status", (msReturn).err.status)
       }
       return msReturn
     })
     .catch((err) => {
-      // ne catch pas les RpcError du microservice
+      console.log("error sometimes is catched here for unknown reasons ")
       const message = err.message ? err.message : err
-      console.log(`problem with request: ${message}`)
-      throw new AppError(HttpCode.INTERNAL_SERVER_ERROR, message)
+      const status = err.httpCode ? err.httpCode : HttpCode.INTERNAL_SERVER_ERROR
+      // throw new AppError(HttpCode.INTERNAL_SERVER_ERROR, message)
+      // res.status(status).send(message)
+      throw err
     })
 
   return res;
 
 }
+

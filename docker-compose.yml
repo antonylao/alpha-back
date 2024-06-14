@@ -1,18 +1,62 @@
 version: "3.3"
 services:
+  back:
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_started
+    restart: always
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: "alt_alpha_test"
+      # changer NATS_HOST
+      NATS_HOST: localhost
+      NATS_PORT: 4222
+      SECRET_KEY: skY5QJfmTrExGDzgu4hRXL
+      REFRESH_SECRET_KEY: skY5QJfmTrExGDzgu4hRXLskY5QJfmTrExGDzgu4hRXL
+      DURATION_TOKEN: '4h'
+      DURATION_REFRESH_TOKEN: '1d'
+
+      ADMIN_EMAIL: alphaprojet78@gmail.com
+      ADMIN_PASSWORD: e m k b pa c o e j m k c y c a
+      TYPEORM_ENTITIES: "./build/entities/*.js"
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://back:3000/healthcheck",
+          "||",
+          "exit",
+          "1"
+        ]
+      # wget --no-verbose --tries=1 --spider http://localhost || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
   db:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: "typeorm_db"
+      MYSQL_DATABASE: "alt_alpha_test"
       # So you don't have to use root, but you can if you like
       MYSQL_USER: "user"
       # You can use whatever password you like
       MYSQL_PASSWORD: "password"
       # Password for root access
       MYSQL_ROOT_PASSWORD: "root"
-    ports:
-      - "3307:3306"
+    # ports:
+    #   - "3307:3306"
     volumes:
       - projet_alpha_sql:/var/lib/mysql
   phpmyadmin:

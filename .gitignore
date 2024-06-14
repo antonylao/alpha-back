@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .env
+.env.*
 docker-compose.yml
 
 # Editor directories and files

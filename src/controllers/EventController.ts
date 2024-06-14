@@ -44,14 +44,31 @@ export class EventController {
   ) {
     throw new Error("Method not implemented.");
   }
-  // eventService: any;
-  
+
+  //! DO NOT DELETE
+  // async createEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
+  //   try {
+  //     const newEvent = await this.eventService.createEvent(req.body);
+  //     // res.status(201).json(newEvent);
+  //     return res.status(HttpCode.CREATED).send(
+  //       {
+  //         status: HttpCode.CREATED,
+  //         datas: newEvent,
+  //         message: "On à créé l'event!"
+  //       }
+  //     )
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // }
 
 
 
 
 
- 
+
+
+
 
   async getAllEvents(req: Request, res: Response): Promise<{ status: HttpCode, datas?: Event[], message: string }> {
 
@@ -193,19 +210,19 @@ export class EventController {
     }
   }
 
-//   async createEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
-//     try {
-//       const newEvent = await this.eventService.createEvent(req.body);
-//       // res.status(201).json(newEvent);
-//       return res.status(HttpCode.CREATED).send(
-//         {
-//           status: HttpCode.CREATED,
-//           datas: newEvent,
-//           message: "On à créé l'event!"
-//         }
-//       )
-// }
- 
+  //   async createEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
+  //     try {
+  //       const newEvent = await this.eventService.createEvent(req.body);
+  //       // res.status(201).json(newEvent);
+  //       return res.status(HttpCode.CREATED).send(
+  //         {
+  //           status: HttpCode.CREATED,
+  //           datas: newEvent,
+  //           message: "On à créé l'event!"
+  //         }
+  //       )
+  // }
+
 
 
   async getEventByType(req: Request, res: Response) {
@@ -241,7 +258,7 @@ export class EventController {
   //   }
   // }
 
- 
+
 
   async createEvent(req: Request, res: Response) {
     upload.single("picture")(req, res, async (err: any) => {
@@ -250,58 +267,58 @@ export class EventController {
         res.status(500).json({ message: err.message });
       } else {
         try {
-         
+
           const eventData = { ...req.body };
           if (req.file) {
             eventData.picture = req.file.filename;
           }
-         
+
           const userRepository = AppDataSource.getRepository(User);
 
-          
+
           const users = await userRepository.find();
-         
-          console.log('les users: '+ users)
-         
-         
+
+          console.log('les users: ' + users)
+
+
           users.forEach(user => {
             sendEmail(user.email, user.role, 'created');
           });
-          
+
           const newEvent = await eventService.createEvent(eventData);
           const eventId = newEvent.id
 
           const eventTasksToCreate = JSON.parse(eventData.selectedTasks || '[]')  // JSON
-          
 
-          if (eventTasksToCreate && eventTasksToCreate.length > 0){
-           
-              
-              
-            for (const eventTask of eventTasksToCreate){
+
+          if (eventTasksToCreate && eventTasksToCreate.length > 0) {
+
+
+
+            for (const eventTask of eventTasksToCreate) {
 
               console.log('getting task by id:', eventTask.id)
               const task = await taskService.getTaskById(eventTask.id)
-              const  formattedEventTask = {
+              const formattedEventTask = {
                 nbVolunteersRequired: eventTask.quantity,
                 progression: Progression.NOT_STARTED,
                 event: newEvent,
                 task,
               }
-              
+
               console.log(formattedEventTask)
 
               const createOneEventTask = await eventTaskService.insertEventTask(formattedEventTask)
-             
+
               console.log('createOneEventTask: ', createOneEventTask)
             }
-           
+
 
 
           }
-          
-         
-          
+
+
+
 
           res.status(201).json(newEvent);
         } catch (error) {
@@ -315,65 +332,65 @@ export class EventController {
 
 
 
- 
+
 
   async updateEvent(req: Request, res: Response) {
     const handleUpload = upload.single('picture');
-  
+
     handleUpload(req, res, async (err: any) => {
       if (err) {
         console.error("message on upload error: " + err);
         return res.status(500).json({ message: err.message });
       }
-  
+
       const id = parseInt(req.params.id);
-      console.log('valeur de req params id: '+ JSON.stringify(req.params))
+      console.log('valeur de req params id: ' + JSON.stringify(req.params))
       console.log("ID de l'événement à mettre à jour : ", id);
       console.log("Données reçues dans le corps de la requête : ", req.body);
-  
+
       if (req.file) {
         console.log("Fichier reçu : ", req.file);
       }
       if (req.files) {
         console.log("Fichiers reçus : ", req.files);
       }
-  
+
       try {
         const eventData = { ...req.body };
         if (req.file) {
           eventData.picture = req.file.filename;
         }
-  
+
         const updatedEvent = await eventService.updateEvent(id, eventData);
-  
+
         if (updatedEvent) {
           const eventTasksToUpdate = JSON.parse(eventData.selectedTasks || '[]');
-  
+
           if (eventTasksToUpdate && eventTasksToUpdate.length > 0) {
             for (const eventTask of eventTasksToUpdate) {
               console.log('getting task by id:', eventTask.id);
               const task = await taskService.getTaskById(eventTask.id);
-  
+
               const formattedEventTask = {
                 nbVolunteersRequired: eventTask.quantity,
                 progression: Progression.NOT_STARTED,
                 event: updatedEvent,
                 task,
               };
-  
+
               console.log(formattedEventTask);
-  
-             
+
+
             }
           }
-  
+
           const userRepository = AppDataSource.getRepository(User);
           const users = await userRepository.find();
-  
+
           users.forEach(user => {
             sendEmail(user.email, user.role, updatedEvent.id, 'updated');
           });
-  
+
           console.log("Evénement mis à jour avec succès : ", updatedEvent);
           return res.json(updatedEvent);
         } else {
@@ -385,12 +402,12 @@ export class EventController {
       }
     });
   }
-  
 
 
-//   async deleteEvent(req: Request, res: Response) {
-//     const id = parseInt(req.params.id);
-// // =======
+
+  //   async deleteEvent(req: Request, res: Response) {
+  //     const id = parseInt(req.params.id);
+  // // =======
   async deleteEvent(req: Request, res: Response): Promise<Response<{ status: HttpCode, datas?: Event, message: string }>> {
     console.log('je rentre dans la fonction delete')
     const id = parseInt(req.params.id);

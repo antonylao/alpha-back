@@ -7,8 +7,8 @@ import { Request, Response, NextFunction } from "express";
 const taskService = new TaskService();
 
 export class TaskController {
-    
-   async getAllTasks(req: Request, res: Response) {
+  private taskService = new TaskService()
+  async getAllTasks(req: Request, res: Response) {
     try {
       const tasks = await taskService.getAllTasks();
       res.json(tasks);
@@ -18,8 +18,17 @@ export class TaskController {
     }
   }
 
- 
 
+  async getAllTasksV2(req: Request, res: Response, next: NextFunction) {
+    try {
+      return {
+        status: 200,
+        datas: await this.taskService.getAllTasks()
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
 
 
 

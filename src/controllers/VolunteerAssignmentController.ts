@@ -4,6 +4,8 @@ import { Status, VolunteerAssignment } from "../entities/VolunteerAssignment";
 import { AppError, HttpCode } from "../utils/AppError";
 import { EventService } from "../services/EventService";
 import { emit, send } from "../utils/nats";
+import { UserService } from "../services/UserService";
+import { TaskService } from "../services/TaskService";
 
 export type ReqParamIds = { volunteerId: number, eventId: number, taskId: number }
 export type ReqParamIdsForCreation = { userId: number, eventId: number, taskId: number }
@@ -12,42 +14,65 @@ const volunteerAssignmentService = new VolunteerAssignmentService();
 
 export class VolunteerAssignmentController {
   private volunteerAssignmentService = new VolunteerAssignmentService()
-
+  private eventService = new EventService()
+  private taskService = new TaskService()
 
   async createPendingVolunterAssignment(req: Request, res: Response, next: NextFunction) {
     try {
-      //microservice call
-      send("createAssignment", { "name": "coucou" })
+      //* with microservice call
+
+      // const event = await this.eventService.getEventById(+req.params.eventId)
+      // console.log("🚀 ~ VolunteerAssignmentController ~ createPendingVolunterAssignment ~ event:", event)
+      // const task = await this.taskService.getTaskById(+req.params.taskId)
+      // console.log("🚀 ~ VolunteerAssignmentController ~ createPendingVolunterAssignment ~ task:", task)
+
+      // const objectToSend = {
+      //   taskId: +req.params.taskId, eventId: +req.params.eventId, userId: req.user.id,
+      //   volunteerComment: "awesome comment",
+      //   organiserRating: 4,
+      //   extraInfos:
+      //   {
+      //     volunteerFirstName: "first",
+      //     volunteerLastName: "last",
+      //     eventTitle: "title",
+      //     eventStart: new Date(),
+      //     eventDuration: "3:30",
+      //     taskName: "task"
+      //   }
+      // }
+      // console.log("🚀 ~ VolunteerAssignmentController ~ createPendingVolunterAssignment ~ objectToSend:", objectToSend)
+      // send("createAssignment", { "name": "coucou" })
+      // return { status: HttpCode.OK, datas: { "name": "coucou" } }
       //end microservice
-      return { status: HttpCode.OK, datas: { "name": "coucou" } }
 
       //* with monolith
 
-      // const params = req.params
-      // console.log(req.user);
+      const params = req.params
+      console.log(req.user);
 
-      // let paramsPartial: Omit<ReqParamIdsForCreation, "userId"> = {
-      //   eventId: -1, taskId: -1
-      // };
+      let paramsPartial: Omit<ReqParamIdsForCreation, "userId"> = {
+        eventId: -1, taskId: -1
+      };
 
-      // Object.keys(paramsPartial).forEach((idKey) => {
-      //   paramsPartial[idKey] = parseInt(params[idKey], 10)
-      // })
+      Object.keys(paramsPartial).forEach((idKey) => {
+        paramsPartial[idKey] = parseInt(params[idKey], 10)
+      })
 
-      // //* en utilisant ULR param
-      // // const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: +req.params.volunteerId }
-      // //* avec token
-      // const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: req.user.id }
-      // console.log("🚀 ~ VolunteerAssignmentController ~ createPendingVolunterAssignment ~ paramsInt:", paramsInt)
+      //* en utilisant ULR param
+      // const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: +req.params.volunteerId }
+      //* avec token
+      const paramsInt: ReqParamIdsForCreation = { ...paramsPartial, userId: req.user.id }
+      console.log("🚀 ~ VolunteerAssignmentController ~ createPendingVolunterAssignment ~ paramsInt:", paramsInt)
 
 
-      // const assignment = await this.volunteerAssignmentService.createPendingVolunterAssignment(paramsInt)
+      const assignment = await this.volunteerAssignmentService.createPendingVolunterAssignment(paramsInt)
 
-      // return {
-      //   status: HttpCode.CREATED,
-      //   datas: assignment
-      // }
+      return {
+        status: HttpCode.CREATED,
+        datas: assignment
+      }
     } catch (error) {
+      console.log("error catched in createPendingVolunteerAssignment")
       next(error)
     }
   }
@@ -55,7 +80,10 @@ export class VolunteerAssignmentController {
 
   async readPastEventsInfoForOrganiserVolunteerCard(req: Request, res: Response, next: NextFunction): Promise<{ status: HttpCode, datas?: VolunteerAssignment[] }> {
     try {
-      send("readPastEventsInfoForOrganiserVolunteerCard", +req.params.volunteerId)
+      // send("readPastEventsInfoForOrganiserVolunteerCard", +req.params.volunteerId)
+      req.params.volunteerId
+      console.log("🚀 ~ VolunteerAssignmentController ~ readPastEventsInfoForOrganiserVolunteerCard ~  req.params.volunteerId:", req.params.volunteerId)
+      console.log("🚀 ~ VolunteerAssignmentController ~ readPastEventsInfoForOrganiserVolunteerCard ~ datas:", await this.volunteerAssignmentService.getPastEventsInfoForOrganiserVolunteerCard(+req.params.volunteerId))
       return {
         status: HttpCode.OK,
         datas: await this.volunteerAssignmentService.getPastEventsInfoForOrganiserVolunteerCard(+req.params.volunteerId)

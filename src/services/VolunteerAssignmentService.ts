@@ -68,9 +68,6 @@ export class VolunteerAssignmentService {
             throw error
             break;
         }
-        //!change here
-        // const error = new AppError(HttpCode.BAD_REQUEST, `Il existe déjà une donnée dans la table volunteerAssignment avec l'association de clés primaires ${JSON.stringify(params)}`)
-        // throw error
       }
 
 
@@ -178,7 +175,7 @@ export class VolunteerAssignmentService {
         status: Status.PENDING,
       },
     })
-    
+
     return pendingRequest
   }
 
@@ -223,17 +220,17 @@ export class VolunteerAssignmentService {
   // créer un assignment volontaire 
   async createVolunteerAssignment(userId: number, eventId: number, taskId: number): Promise<VolunteerAssignment> {
     const createAssignment = await this.volunteerAssignmentRepository
-        .createQueryBuilder("va")
-        .where("va.eventTaskEventId = :eventId", { eventId:eventId })
-        .andWhere("va.status = :status", { status: Status.ACCEPTED })
-        .andWhere("va.userId = :userId", { userId: userId })
-        .getOne()
-   console.log(createAssignment)
-         return createAssignment;
-        //  si le user a deja une tache accepté je veux que cela me retourne une erreur avec un message : volontaire a deja un job dans cet event
-        //  dans l'autre cas, la création est bien effectué et je veux un message : job assigné au volontaire
-  
-  
+      .createQueryBuilder("va")
+      .where("va.eventTaskEventId = :eventId", { eventId: eventId })
+      .andWhere("va.status = :status", { status: Status.ACCEPTED })
+      .andWhere("va.userId = :userId", { userId: userId })
+      .getOne()
+    console.log(createAssignment)
+    return createAssignment;
+    //  si le user a deja une tache accepté je veux que cela me retourne une erreur avec un message : volontaire a deja un job dans cet event
+    //  dans l'autre cas, la création est bien effectué et je veux un message : job assigné au volontaire
+
+
 
     // // Vérifier si l'utilisateur a déjà une tâche dans le même événement
     // const existingAssignment = await this.volunteerAssignmentRepository.findOne({
@@ -252,7 +249,7 @@ export class VolunteerAssignmentService {
     // return await this.volunteerAssignmentRepository.save(newVolunteerAssignment);
   }
 
-  
+
   //general function: not used
   async getAllPrimaryFields(params: ReqParamIds) {
     //*rawquery method

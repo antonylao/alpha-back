@@ -1,12 +1,13 @@
 import { UserController } from "./controllers/UserController";
 import { VolunteerAssignment } from "./entities/VolunteerAssignment";
 import { VolunteerAssignmentController } from "./controllers/VolunteerAssignmentController";
-import { EventController } from '../src/controllers/EventController';
+import { EventController } from './controllers/EventController';
 import { upload } from './multerConfig';
 import { TaskController } from "./controllers/TaskController";
 import { EventTaskController } from "./controllers/EventTaskController";
 import { RoomController } from "./controllers/RoomController";
 import { AuthController } from "./controllers/AuthController";
+import { HealthcheckController } from "./controllers/HealthcheckController";
 
 
 export const Routes = [
@@ -16,6 +17,13 @@ export const Routes = [
     //     controller: , // nom du fichier
     //     action: "" // nom de la fonction dans le fichier
     // },
+    //*HEALTHCHECK
+    {
+        method: "get",
+        route: "/healthcheck",
+        controller: HealthcheckController,
+        action: "healthcheck"
+    },
 
     //*AUTH
     {
@@ -286,6 +294,12 @@ export const Routes = [
         route: "/task",
         controller: TaskController,
         action: "getAllTasks"
+    },
+    {
+        method: "get",
+        route: "/taskV2",
+        controller: TaskController,
+        action: "getAllTasksV2"
     },
 
     //  créer un event task

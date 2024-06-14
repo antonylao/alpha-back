@@ -19,7 +19,7 @@ dotenv.config()
 const app = express()
 app.use(cors());
 
-console.log('variable : ' + process.env.DB_PORT)
+console.log('SQL running on port : ' + process.env.DB_PORT)
 
 app.use("/auth/refreshToken", jwtCheckRefresh)
 app.use("/api", jwtCheck)
@@ -27,7 +27,7 @@ app.use("/api/organiserCheck", organiserCheck)
 app.use("/api/volunteerCheck", volunteerCheck)
 
 //to get route obj for front app
-// console.log(transformRoutesForFront({ beginningSlash: false }))
+console.log(transformRoutesForFront({ beginningSlash: false }))
 
 AppDataSource.initialize()
     .then(() => {
