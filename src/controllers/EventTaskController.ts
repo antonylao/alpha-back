@@ -1,33 +1,33 @@
 
 
-import { Task } from "../entities/Task";
-import { Repository } from "typeorm";
-import { Event } from "../entities/Event";
+import {Task} from "../entities/Task";
+import {Repository} from "typeorm";
+import {Event} from "../entities/Event";
 
-import { TaskService } from "../services/TaskService";
-import { NextFunction, Request, Response } from "express"
-import { EventTaskService } from "../services/EventTaskService"
-import { EventService } from "../services/EventService"
-import { AppError, HttpCode } from "../utils/AppError"
-import { EventTask } from "../entities/EventTask";
+import {TaskService} from "../services/TaskService";
+import {NextFunction, Request, Response} from "express"
+import {EventTaskService} from "../services/EventTaskService"
+import {EventService} from "../services/EventService"
+import {AppError, HttpCode} from "../utils/AppError"
+import {EventTask} from "../entities/EventTask";
 
 export class EventTaskController {
- private eventTaskService = new EventTaskService()
- private taskService = new TaskService()
+  private eventTaskService = new EventTaskService()
+  private taskService = new TaskService()
 
- private eventService = new EventService()
+  private eventService = new EventService()
   private eventRepository: Repository<Event>
   private taskRepository: Repository<Task>
-  
-  
+
+
   async createEventTask(req: Request, res: Response) {
     try {
-        console.log( await this.taskService.getTaskByName('Billeterie'))
-        const taskId = (await this.taskService.getTaskByName('Billeterie')).id;
-        console.log(taskId)
-      const { eventId, selectedInfos, task } = req.body;
-      console.log( "req.body is: "+ eventId,'________', selectedInfos)
-      const event = await this.eventRepository.findOne({where:{id: eventId}});
+      console.log(await this.taskService.getTaskByName('Billeterie'))
+      const taskId = (await this.taskService.getTaskByName('Billeterie')).id;
+      console.log(taskId)
+      const {eventId, selectedInfos, task} = req.body;
+      console.log("req.body is: " + eventId, '________', selectedInfos)
+      const event = await this.eventRepository.findOne({where: {id: eventId}});
       // Récupérer la liste des tâches disponibles
       const tasks = await this.taskRepository.find();
 
@@ -42,20 +42,20 @@ export class EventTaskController {
         event: event,
         // event: eventId as number, 
         taskId: taskNameToIdMap[taskName], // Utiliser l'ID correspondant à partir du nom de la tâche
-        nbVolunteersRequired: count as number 
+        nbVolunteersRequired: count as number
       }));
 
       // Enregistrer les données des tâches de l'événement dans la base de données
       const eventTasks = await Promise.all(eventTasksData.map(eventTaskData => this.eventTaskService.createEventTask(eventTaskData)));
-  
+
       res.status(201).json(eventTasks);
     } catch (error) {
       console.error("Error creating event tasks:", error);
-      res.status(500).json({ message: "Failed to create event tasks" });
+      res.status(500).json({message: "Failed to create event tasks"});
     }
   }
 
- 
+
 
   async getUpcomingEventInfosForTaskApply(req: Request, res: Response, next: NextFunction) {
     try {
@@ -88,7 +88,7 @@ export class EventTaskController {
   }
 
 
-  async readEventTaskById(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: EventTask[], message: string }> {
+  async readEventTaskById(req: Request, res: Response, next: Function): Promise<{status: HttpCode, datas?: EventTask[], message: string}> {
     try {
       const eventTask = await this.eventTaskService.getEventTaskById(+req.params.event_id, +req.params.task_id)
       console.log("🚀 ~ EventTaskController ~ readEventTaskById ~ event:", eventTask)
@@ -106,7 +106,7 @@ export class EventTaskController {
     }
   }
 
-  async updateEventTaskProgressionById(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: EventTask[], message: string }> {
+  async updateEventTaskProgressionById(req: Request, res: Response, next: Function): Promise<{status: HttpCode, datas?: EventTask[], message: string}> {
     try {
       const eventTask = await this.eventTaskService.updateEventTaskProgressionById(+req.params.event_id, +req.params.task_id, req.body)
       console.log("🚀 ~ EventTaskController ~ updateEventTaskProgressionById ~ event:", eventTask)
@@ -124,7 +124,7 @@ export class EventTaskController {
     }
   }
 
-  async updateEventTaskRequiredVolunteersById(req: Request, res: Response, next: Function): Promise<{ status: HttpCode, datas?: EventTask[], message: string }> {
+  async updateEventTaskRequiredVolunteersById(req: Request, res: Response, next: Function): Promise<{status: HttpCode, datas?: EventTask[], message: string}> {
     try {
       const eventTask = await this.eventTaskService.updateEventTaskRequiredVolunteersById(+req.params.event_id, +req.params.task_id, req.body)
       console.log("🚀 ~ EventTaskController ~ updateRatingsByEventId ~ event:", eventTask)
@@ -142,7 +142,7 @@ export class EventTaskController {
     }
   }
 
-  async deleteEventTaskById(req: Request, res: Response, next: Function): Promise<Response<{ status: HttpCode, datas?: EventTask[], message: string }>> {
+  async deleteEventTaskById(req: Request, res: Response, next: Function): Promise<Response<{status: HttpCode, datas?: EventTask[], message: string}>> {
     try {
       const eventTask = await this.eventTaskService.deleteEventTaskById(+req.params.event_id, +req.params.task_id)
       console.log("🚀 ~ EventTaskController ~ updateRatingsByEventId ~ event:", eventTask)
